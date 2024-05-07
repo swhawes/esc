@@ -1,0 +1,219 @@
+---
+title: "main"
+format: html
+---
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
+
+library(tidyverse)
+library(readxl)
+library(openxlsx)
+library(kableExtra)
+library(psych)
+
+merged <- read_excel("/Users/shawes/PA_JCMS/data/Merged_Files_NoRecid.xlsx");
+
+# Calculate the percentage of missing values for each column
+missing_percentage <- sapply(merged, function(x) mean(is.na(x)) * 100)
+
+# Convert to dataframe for better readability
+missing_df <- data.frame(Variable = names(missing_percentage), MissingPercentage = missing_percentage)
+
+# Order by the highest percentage of missing values
+missing_df <- missing_df[order(-missing_df$MissingPercentage), ]
+
+# Create a table using kable from knitr
+kable(missing_df, caption = "Percentage of Missing Data by Variable")
+
+# Calculate the percentage of missing values for each column
+missing_percentage <- sapply(merged, function(x) mean(is.na(x)) * 100)
+
+# Convert to dataframe for better readability
+missing_df <- data.frame(Variable = names(missing_percentage), MissingPercentage = missing_percentage)
+
+# Order by the highest percentage of missing values
+missing_df <- missing_df[order(-missing_df$MissingPercentage), ]
+
+# Create a table using kable from knitr
+kable(missing_df, caption = "Percentage of Missing Data by Variable")
+#This creates a formatted table that can be integrated into reports and shared documents.
+
+#2. Visualizing Missing Data with a Plot
+# Plotting the missing data percentages
+ggplot(missing_df, aes(x = reorder(Variable, -MissingPercentage), y = MissingPercentage)) +
+    geom_bar(stat = "identity", fill = "steelblue") +
+    theme_minimal() +
+    labs(title = "Missing Data Percentage by Variable", x = "Variable", y = "Percentage Missing") +
+    coord_flip() # Flip coordinates for easier reading of variable names
+
+# Write the dataframe to an Excel file
+write.xlsx(missing_df, file = "/Users/shawes/PA_JCMS/data/MissingDataAnalysis.xlsx")
+
+```
+
+
+```{r}
+#| warning: false
+
+# Filter columns that are not 100% missing
+filtered_data <- merged[, missing_percentage < 1]
+
+# Apply describe function from psych package to get detailed statistics
+descriptive_stats <- describe(filtered_data[sapply(filtered_data, is.numeric)])
+
+# Print results
+print(descriptive_stats)
+
+```
+
+```{r}
+
+# Create histograms for each numeric column
+lapply(names(filtered_data[sapply(filtered_data, is.numeric)]), function(var) {
+  ggplot(filtered_data, aes(x = .data[[var]])) +
+    geom_histogram(bins = 30, fill = "blue", color = "black") +
+    ggtitle(paste("Histogram of", var)) +
+    theme_minimal()  # Adding theme_minimal for better aesthetics
+})
+
+```
+
+```{r}
+
+print(descriptive_stats)
+
+```
+
+```{r}
+
+# Ensure all character columns are converted to factors
+filtered_data <- filtered_data %>%
+  mutate(across(where(is.character), as.factor))
+
+# Create a summary table for counts and levels
+count_levels_summary <- filtered_data %>%
+  select(where(is.factor)) %>%  # Select only factor variables
+  summarise(across(everything(), 
+                   list(Count = ~sum(!is.na(.)),
+                        Levels = ~nlevels(.)), 
+                   .names = "{.col}_{.fn}")) %>%
+  pivot_longer(cols = everything(), 
+               names_to = c("Variable", ".value"), 
+               names_pattern = "(.*)_(.*)")
+
+# Print the counts and levels summary table
+print(count_levels_summary)
+
+```
+
+```{r}
+
+# Create a summary table for frequencies for categories with fewer than 100 levels
+frequency_summary <- filtered_data %>%
+  select(where(is.factor)) %>%
+  summarise(across(everything(),
+                   ~if(nlevels(.) < 100) list(table(.)) else NA, 
+                   .names = "{.col}_Frequency")) %>%
+  pivot_longer(cols = ends_with("_Frequency"),
+               names_to = "Variable",
+               values_to = "Frequency",
+               values_drop_na = TRUE)
+
+# Format the frequency data for better readability
+frequency_summary$Frequency <- sapply(frequency_summary$Frequency, toString)
+
+# Print the frequency summary table for factors with less than 100 levels
+print(frequency_summary)
+
+```
+
+
+```{r}
+
+# Ensure all character columns are converted to factors
+filtered_data <- filtered_data %>%
+  mutate(across(where(is.character), as.factor))
+
+# Create a summary table for counts and levels
+count_levels_summary <- filtered_data %>%
+  select(where(is.factor)) %>%  # Select only factor variables
+  summarise(across(everything(), 
+                   list(Count = ~sum(!is.na(.)),
+                        Levels = ~nlevels(.)), 
+                   .names = "{.col}_{.fn}")) %>%
+  pivot_longer(cols = everything(), 
+               names_to = c("Variable", ".value"), 
+               names_pattern = "(.*)_(.*)")
+
+# Print the counts and levels summary table
+print(count_levels_summary)
+
+```
+
+```{r}
+# Create a summary table for frequencies for categories with fewer than 100 levels
+frequency_summary <- filtered_data %>%
+  select(where(is.factor)) %>%
+  summarise(across(everything(),
+                   ~if(nlevels(.) < 100) list(enframe(table(.))) else NA, 
+                   .names = "{.col}_Frequency")) %>%
+  pivot_longer(cols = ends_with("_Frequency"),
+               names_to = "Variable",
+               values_to = "Frequency",
+               values_drop_na = TRUE)
+
+# Explode the list column into separate rows for each category
+frequency_summary <- frequency_summary %>%
+  unnest(Frequency)
+
+# Rename columns for clarity
+colnames(frequency_summary)[3:4] <- c("Category", "Count")
+
+# Print the frequency summary table for factors with less than 100 levels
+print(frequency_summary)
+
+```
+
+
+```{r}
+
+# Generate bar plots for each categorical column
+results <- lapply(names(filtered_data[sapply(filtered_data, is.factor)]), function(var) {
+  ggplot(filtered_data, aes(x = .data[[var]], fill = .data[[var]])) +
+    geom_bar() +
+    labs(title = paste("Frequency of", var), x = var, fill = var) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))  # Rotate x-axis labels for readability
+})
+
+
+# Create bar plots for each factor column
+# lapply(names(filtered_data[sapply(filtered_data, is.factor)]), function(var) {
+#   ggplot(filtered_data, aes_string(x = var, fill = var)) +
+#     geom_bar() +
+#     ggtitle(paste("Frequency of", var)) +
+#     theme_minimal()
+# })
+
+# Export numeric descriptives to CSV
+#write.csv(descriptive_stats, "/Users/shawes/PA_JCMS/data/Descriptive_Statistics_Numeric.csv")
+
+# For categorical data, it may be necessary to convert list outputs to data frames first, not shown here.
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
