@@ -68,7 +68,7 @@ descriptive_stats <- describe(filtered_data[sapply(filtered_data, is.numeric)])
 print(descriptive_stats)
 
 ```
-
+test
 ```{r}
 
 # Create histograms for each numeric column
