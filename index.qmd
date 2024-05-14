@@ -1,22 +1,6 @@
 ---
 title: "ESC-PA_JCMS"
-format: html
 ---
-
-```{r}
-#| echo: FALSE # The content of this code block will not be rendered
-#| output: FALSE # Output from this code block will not be rendered
-
-# This code configures knitr code chunk options
-
-knitr::opts_chunk$set(
-    echo = T, message = F, warning = F, error = F, output = T,
-    comment = NA, cache = T, code_folding = T,
-    R.options = list(width = 220, digits = 3),
-    fig.align = "center",
-    out.width = "75%", fig.asp = .75
-)
-```
 
 ```{r}
 #| echo: false
@@ -32,33 +16,49 @@ library(stringr)
 library(tidyr)
 library(gtsummary)
 library(purrr)
+library(gt)
 
 # Read the data from an Excel file
 merged <- read_excel("/Users/shawes/PA_JCMS/data/Merged_Files_NoRecid.xlsx")
 
 merged <- merged %>%
-    rename(
-        service_name_1 = "Service Name", # Adjust indices as appropriate
-        service_type_1 = "Service Type"
-    )
+  rename(
+    service_name_1 = "Service Name",  # Adjust indices as appropriate
+    service_type_1 = "Service Type"
+  )
 
 # Assuming 'df' is your dataframe
 merged <- merged %>%
-    rename_all(~ str_to_lower(str_replace_all(., pattern = " ", replacement = "_")))
+  rename_all(~ str_to_lower(str_replace_all(., pattern = " ", replacement = "_")))
 
 ```
 
 ```{r}
 #| echo: false
 #| warning: false
+#| output: false
 
-# Compute the percentage of missing data for each column
+# Calculate missing data percentages
 missing_percentages <- merged %>%
-    dplyr::summarise(across(everything(), ~ round(mean(is.na(.)) * 100))) %>%
-    tidyr::pivot_longer(everything(), names_to = "column", values_to = "percent_missing")
+  summarise(across(everything(), ~ round(mean(is.na(.)) * 100, digits = 2))) %>%
+  pivot_longer(everything(), names_to = "Variable", values_to = "Percent Missing")
 
-# Print the results to check
-print(missing_percentages)
+# Create a gtsummary table from the missing percentages data frame
+missing_table <- missing_percentages %>%
+  gtsummary::tbl_summary(
+    type = all_continuous() ~ "continuous",
+    statistic = all_continuous() ~ "{mean}",  # This line actually isn't necessary since we're directly displaying the missing percentages
+    digits = all_continuous() ~ 2,
+    label = list(Percent_Missing = "Percent Missing")
+  ) %>%
+  modify_header(label ~ "**Variable**")  # Change header names
+
+html_table <- missing_table %>%
+  as_gt() %>%
+  gt::tab_header(
+    title = "Missing Data Report",
+    subtitle = "This table displays the percentage of missing data for each variable."
+  )
 
 ```
 
@@ -67,18 +67,27 @@ print(missing_percentages)
 #| echo: false
 #| warning: false
 #| output: false
+#| results: 'asis'
+## % Missingness by Variable
 
-# Identify columns with less than 90% missing data
-cols_to_keep <- missing_percentages %>%
-    filter(percent_missing < 90) %>%
-    pull(column)
+print(html_table)
 
-# Filter the original dataframe to keep these columns
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
+#| results: 'asis'
+
+# Calculate the percentage of missing data for each column
+missing_data_percentages <- merged %>%
+  summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%
+  unlist()  # Convert to vector
+
+# Removing columns with >= 90% missing data directly in a single pipeline
 merged <- merged %>%
-    select(all_of(cols_to_keep))
-
-merged <- merged %>%
-    select(where(~ mean(is.na(.)) * 100 < 90))
+  select(where(~ mean(is.na(.)) < 90))
 
 # Set character columns to factors
 merged <- merged %>%
@@ -94,30 +103,83 @@ merged <- merged %>%
 ```{r}
 #| echo: false
 #| warning: false
+#| output: false
+#| results: 'asis'
 
-# List the data type for each column in the dataframe 'merged'
-column_types <- map_chr(merged, class)
-# print(column_types)
+# Step 1: Prepare data
+column_types <- map_chr(merged, class)  # Get the class of each column in 'merged'
+type_data <- tibble(Variable = names(column_types), Type = column_types)
+type_counts <- type_data %>% count(Type, name = "Count")
 
-# Count the number of each type of data
-type_counts <- tibble(type = column_types) %>%
-    count(type)
-# Print the results to check
-print(type_counts)
+# Step 2: Create and style a gt table in a single chain
+types_table <- gt(data = type_counts) %>%
+  tab_header(
+    title = "Data Types in DataFrame",
+    subtitle = "A summary of the number of each data type present in the 'merged' DataFrame."
+  ) %>%
+  cols_label(
+    Type = "Data Type",
+    Count = "Number of Columns"
+  ) %>%
+  fmt_number(
+    columns = vars(Count),
+    decimals = 0  # No decimal places for counts
+  ) %>%
+  tab_options(
+    heading.background.color = "gray"
+    #heading.font.weight = "bold",
+    #heading.color = "white"
+  ) %>%
+  data_color(
+    columns = vars(Count),
+    colors = scales::col_numeric(palette = c("lightblue", "blue"), domain = NULL)
+  )
+
+```
+
+
+## Counts for Variable Types
+```{r}
+#| echo: false
+#| warning: false
+#| results: 'asis'
+
+# Print the table to view it
+print(types_table)
+
 ```
 
 
 ```{r}
 #| echo: false
 #| warning: false
+#| results: 'asis'
 
-# Create a named list of the number of levels for factor variables
+library(dplyr)
+library(tidyr)
+
+# Calculate the number of levels for each factor variable
 factor_levels <- merged %>%
-    select_if(is.factor) %>%
-    map_dfr(~ nlevels(.), .id = "Variable") # Using map_dfr to return a dataframe
+  select(where(is.factor)) %>%
+  summarise(across(everything(), nlevels, .names = "{.col}_levels"))
 
-# Print the results
-print(factor_levels)
+# Pivot to a long format for better readability
+factor_levels_long <- factor_levels %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Number of Levels")
+
+# Assuming factor_levels_long is already created and contains the necessary data
+levels_table <- gt(data = factor_levels_long) %>%
+  gt::tab_header(
+    title = "Number of Levels in Factor Variables",
+    subtitle = "This table shows the number of levels for each factor variable in the dataset."
+  ) %>%
+  gt::cols_label(
+    Variable = "Factor Variable",
+    `Number of Levels` = "Levels"
+  )
+
+# Print the gt table to the R console
+print(levels_table)
 
 ```
 
@@ -125,6 +187,7 @@ print(factor_levels)
 ```{r}
 #| echo: false
 #| warning: false
+#| results: 'asis'
 
 # Calculate missing percentages for each column of interest
 missing_percentages <- merged %>%
@@ -158,38 +221,37 @@ print(descriptives_table)
 #| echo: false
 #| warning: false
 #| output: false
+#| results: 'asis'
 
 # Specify the variables to include
-variables_to_include <- c(
-    "setting", "service_type",
-    "target_dosage", "target_duration",
-    "number_of_youth:_\r\nscoring_low_on_the_yls",
-    "service_classification", "name_brand_service",
-    "total_pts._risk_level", "total_pts._amount_of_service",
-    "target_weeks", "target_hours"
-)
+variables_to_include <- c("setting", "service_type", 
+                          "target_dosage", "target_duration", 
+                          "number_of_youth:_\r\nscoring_low_on_the_yls",
+                          "service_classification", "name_brand_service", 
+                          "total_pts._risk_level", "total_pts._amount_of_service", 
+                          "target_weeks", "target_hours")
 
 # Filter the merged dataframe to include only the specified variables, along with 'Setting' if it's a grouping variable
 descriptive_data <- merged %>%
-    select(setting, all_of(variables_to_include))
+  select(setting, all_of(variables_to_include))
 
 ```
 
 ```{r}
 #| echo: false
 #| warning: false
+#| output: false
+#| results: 'asis'
 
 # Generate descriptive statistics table
 # Prepare the descriptive statistics table
 descriptives_table <- descriptive_data %>%
-    select(
-        "setting", "service_type",
-        "target_dosage", "target_duration",
-        "number_of_youth:_\r\nscoring_low_on_the_yls",
-        "service_classification", "name_brand_service",
-        "total_pts._risk_level", "total_pts._amount_of_service",
-        "target_weeks", "target_hours"
-    ) %>%
+    select("setting", "service_type", 
+                          "target_dosage", "target_duration", 
+                          "number_of_youth:_\r\nscoring_low_on_the_yls",
+                          "service_classification", "name_brand_service", 
+                          "total_pts._risk_level", "total_pts._amount_of_service", 
+                          "target_weeks", "target_hours") %>%
     tbl_summary(
         by = setting, # Optional: if you want to group by gender
         missing = "no",
@@ -200,6 +262,13 @@ descriptives_table <- descriptive_data %>%
         )
     ) %>%
     modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}")
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| results: 'asis'
 
 # Print the table
 print(descriptives_table)
