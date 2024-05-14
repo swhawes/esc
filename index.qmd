@@ -1,7 +1,22 @@
 ---
-title: "main"
+title: "ESC-PA_JCMS"
 format: html
 ---
+
+```{r}
+#| echo: FALSE # The content of this code block will not be rendered
+#| output: FALSE # Output from this code block will not be rendered
+
+# This code configures knitr code chunk options
+
+knitr::opts_chunk$set(
+    echo = T, message = F, warning = F, error = F, output = T,
+    comment = NA, cache = T, code_folding = T,
+    R.options = list(width = 220, digits = 3),
+    fig.align = "center",
+    out.width = "75%", fig.asp = .75
+)
+```
 
 ```{r}
 #| echo: false
@@ -13,199 +28,192 @@ library(readxl)
 library(openxlsx)
 library(kableExtra)
 library(psych)
+library(stringr)
+library(tidyr)
+library(gtsummary)
+library(purrr)
 
-merged <- read_excel("/Users/shawes/PA_JCMS/data/Merged_Files_NoRecid.xlsx");
+# Read the data from an Excel file
+merged <- read_excel("/Users/shawes/PA_JCMS/data/Merged_Files_NoRecid.xlsx")
 
-# Calculate the percentage of missing values for each column
-missing_percentage <- sapply(merged, function(x) mean(is.na(x)) * 100)
+merged <- merged %>%
+    rename(
+        service_name_1 = "Service Name", # Adjust indices as appropriate
+        service_type_1 = "Service Type"
+    )
 
-# Convert to dataframe for better readability
-missing_df <- data.frame(Variable = names(missing_percentage), MissingPercentage = missing_percentage)
-
-# Order by the highest percentage of missing values
-missing_df <- missing_df[order(-missing_df$MissingPercentage), ]
-
-# Create a table using kable from knitr
-kable(missing_df, caption = "Percentage of Missing Data by Variable")
-
-# Calculate the percentage of missing values for each column
-missing_percentage <- sapply(merged, function(x) mean(is.na(x)) * 100)
-
-# Convert to dataframe for better readability
-missing_df <- data.frame(Variable = names(missing_percentage), MissingPercentage = missing_percentage)
-
-# Order by the highest percentage of missing values
-missing_df <- missing_df[order(-missing_df$MissingPercentage), ]
-
-# Create a table using kable from knitr
-kable(missing_df, caption = "Percentage of Missing Data by Variable")
-#This creates a formatted table that can be integrated into reports and shared documents.
-
-#2. Visualizing Missing Data with a Plot
-# Plotting the missing data percentages
-ggplot(missing_df, aes(x = reorder(Variable, -MissingPercentage), y = MissingPercentage)) +
-    geom_bar(stat = "identity", fill = "steelblue") +
-    theme_minimal() +
-    labs(title = "Missing Data Percentage by Variable", x = "Variable", y = "Percentage Missing") +
-    coord_flip() # Flip coordinates for easier reading of variable names
-
-# Write the dataframe to an Excel file
-write.xlsx(missing_df, file = "/Users/shawes/PA_JCMS/data/MissingDataAnalysis.xlsx")
+# Assuming 'df' is your dataframe
+merged <- merged %>%
+    rename_all(~ str_to_lower(str_replace_all(., pattern = " ", replacement = "_")))
 
 ```
 
-
 ```{r}
+#| echo: false
 #| warning: false
 
-# Filter columns that are not 100% missing
-filtered_data <- merged[, missing_percentage < 1]
+# Compute the percentage of missing data for each column
+missing_percentages <- merged %>%
+    dplyr::summarise(across(everything(), ~ round(mean(is.na(.)) * 100))) %>%
+    tidyr::pivot_longer(everything(), names_to = "column", values_to = "percent_missing")
 
-# Apply describe function from psych package to get detailed statistics
-descriptive_stats <- describe(filtered_data[sapply(filtered_data, is.numeric)])
-
-# Print results
-print(descriptive_stats)
-
-```
-test
-```{r}
-
-# Create histograms for each numeric column
-lapply(names(filtered_data[sapply(filtered_data, is.numeric)]), function(var) {
-  ggplot(filtered_data, aes(x = .data[[var]])) +
-    geom_histogram(bins = 30, fill = "blue", color = "black") +
-    ggtitle(paste("Histogram of", var)) +
-    theme_minimal()  # Adding theme_minimal for better aesthetics
-})
-
-```
-
-```{r}
-
-print(descriptive_stats)
-
-```
-
-```{r}
-
-# Ensure all character columns are converted to factors
-filtered_data <- filtered_data %>%
-  mutate(across(where(is.character), as.factor))
-
-# Create a summary table for counts and levels
-count_levels_summary <- filtered_data %>%
-  select(where(is.factor)) %>%  # Select only factor variables
-  summarise(across(everything(), 
-                   list(Count = ~sum(!is.na(.)),
-                        Levels = ~nlevels(.)), 
-                   .names = "{.col}_{.fn}")) %>%
-  pivot_longer(cols = everything(), 
-               names_to = c("Variable", ".value"), 
-               names_pattern = "(.*)_(.*)")
-
-# Print the counts and levels summary table
-print(count_levels_summary)
-
-```
-
-```{r}
-
-# Create a summary table for frequencies for categories with fewer than 100 levels
-frequency_summary <- filtered_data %>%
-  select(where(is.factor)) %>%
-  summarise(across(everything(),
-                   ~if(nlevels(.) < 100) list(table(.)) else NA, 
-                   .names = "{.col}_Frequency")) %>%
-  pivot_longer(cols = ends_with("_Frequency"),
-               names_to = "Variable",
-               values_to = "Frequency",
-               values_drop_na = TRUE)
-
-# Format the frequency data for better readability
-frequency_summary$Frequency <- sapply(frequency_summary$Frequency, toString)
-
-# Print the frequency summary table for factors with less than 100 levels
-print(frequency_summary)
+# Print the results to check
+print(missing_percentages)
 
 ```
 
 
 ```{r}
+#| echo: false
+#| warning: false
+#| output: false
 
-# Ensure all character columns are converted to factors
-filtered_data <- filtered_data %>%
-  mutate(across(where(is.character), as.factor))
+# Identify columns with less than 90% missing data
+cols_to_keep <- missing_percentages %>%
+    filter(percent_missing < 90) %>%
+    pull(column)
 
-# Create a summary table for counts and levels
-count_levels_summary <- filtered_data %>%
-  select(where(is.factor)) %>%  # Select only factor variables
-  summarise(across(everything(), 
-                   list(Count = ~sum(!is.na(.)),
-                        Levels = ~nlevels(.)), 
-                   .names = "{.col}_{.fn}")) %>%
-  pivot_longer(cols = everything(), 
-               names_to = c("Variable", ".value"), 
-               names_pattern = "(.*)_(.*)")
+# Filter the original dataframe to keep these columns
+merged <- merged %>%
+    select(all_of(cols_to_keep))
 
-# Print the counts and levels summary table
-print(count_levels_summary)
+merged <- merged %>%
+    select(where(~ mean(is.na(.)) * 100 < 90))
 
-```
+# Set character columns to factors
+merged <- merged %>%
+    mutate(across(where(is.character), as.factor))
 
-```{r}
-# Create a summary table for frequencies for categories with fewer than 100 levels
-frequency_summary <- filtered_data %>%
-  select(where(is.factor)) %>%
-  summarise(across(everything(),
-                   ~if(nlevels(.) < 100) list(enframe(table(.))) else NA, 
-                   .names = "{.col}_Frequency")) %>%
-  pivot_longer(cols = ends_with("_Frequency"),
-               names_to = "Variable",
-               values_to = "Frequency",
-               values_drop_na = TRUE)
-
-# Explode the list column into separate rows for each category
-frequency_summary <- frequency_summary %>%
-  unnest(Frequency)
-
-# Rename columns for clarity
-colnames(frequency_summary)[3:4] <- c("Category", "Count")
-
-# Print the frequency summary table for factors with less than 100 levels
-print(frequency_summary)
+# Subset the dataframe to include only 'factor' or 'numeric' columns
+merged <- merged %>%
+    select(where(~ is.factor(.) || is.numeric(.)))
 
 ```
 
 
 ```{r}
+#| echo: false
+#| warning: false
 
-# Generate bar plots for each categorical column
-results <- lapply(names(filtered_data[sapply(filtered_data, is.factor)]), function(var) {
-  ggplot(filtered_data, aes(x = .data[[var]], fill = .data[[var]])) +
-    geom_bar() +
-    labs(title = paste("Frequency of", var), x = var, fill = var) +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1))  # Rotate x-axis labels for readability
-})
+# List the data type for each column in the dataframe 'merged'
+column_types <- map_chr(merged, class)
+# print(column_types)
 
-
-# Create bar plots for each factor column
-# lapply(names(filtered_data[sapply(filtered_data, is.factor)]), function(var) {
-#   ggplot(filtered_data, aes_string(x = var, fill = var)) +
-#     geom_bar() +
-#     ggtitle(paste("Frequency of", var)) +
-#     theme_minimal()
-# })
-
-# Export numeric descriptives to CSV
-#write.csv(descriptive_stats, "/Users/shawes/PA_JCMS/data/Descriptive_Statistics_Numeric.csv")
-
-# For categorical data, it may be necessary to convert list outputs to data frames first, not shown here.
+# Count the number of each type of data
+type_counts <- tibble(type = column_types) %>%
+    count(type)
+# Print the results to check
+print(type_counts)
+```
 
 
+```{r}
+#| echo: false
+#| warning: false
+
+# Create a named list of the number of levels for factor variables
+factor_levels <- merged %>%
+    select_if(is.factor) %>%
+    map_dfr(~ nlevels(.), .id = "Variable") # Using map_dfr to return a dataframe
+
+# Print the results
+print(factor_levels)
 
 ```
+
+# Descriptives Test for Subset I of Variables
+```{r}
+#| echo: false
+#| warning: false
+
+# Calculate missing percentages for each column of interest
+missing_percentages <- merged %>%
+    select(setting, gender, race, ethnicity, racnicity, age_at_service_start, age_at_first_referral_date) %>%
+    summarise(across(everything(), ~ sum(is.na(.)) / n() * 100, .names = "missing_{.col}"))
+
+# Convert to a format suitable for addition to gtsummary table
+missing_percentages <- pivot_longer(missing_percentages, cols = everything(), names_to = "variable", values_to = "missing_percent")
+
+# Prepare the descriptive statistics table
+descriptives_table <- merged %>%
+    select(setting, gender, race, ethnicity, racnicity, age_at_service_start, age_at_first_referral_date) %>%
+    tbl_summary(
+        by = setting, # Optional: if you want to group by gender
+        missing = "no",
+        # label = list(Setting, ~"Setting"),
+        statistic = list(
+            all_continuous() ~ "{mean} ({sd})",
+            all_categorical() ~ "{p}%"
+        )
+    ) %>%
+    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}")
+
+# Print the table to see if it works without the modifications
+print(descriptives_table)
+
+```
+
+# Descriptives Test for Subset II of Variables
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
+
+# Specify the variables to include
+variables_to_include <- c(
+    "setting", "service_type",
+    "target_dosage", "target_duration",
+    "number_of_youth:_\r\nscoring_low_on_the_yls",
+    "service_classification", "name_brand_service",
+    "total_pts._risk_level", "total_pts._amount_of_service",
+    "target_weeks", "target_hours"
+)
+
+# Filter the merged dataframe to include only the specified variables, along with 'Setting' if it's a grouping variable
+descriptive_data <- merged %>%
+    select(setting, all_of(variables_to_include))
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+
+# Generate descriptive statistics table
+# Prepare the descriptive statistics table
+descriptives_table <- descriptive_data %>%
+    select(
+        "setting", "service_type",
+        "target_dosage", "target_duration",
+        "number_of_youth:_\r\nscoring_low_on_the_yls",
+        "service_classification", "name_brand_service",
+        "total_pts._risk_level", "total_pts._amount_of_service",
+        "target_weeks", "target_hours"
+    ) %>%
+    tbl_summary(
+        by = setting, # Optional: if you want to group by gender
+        missing = "no",
+        # label = list(Setting, ~"Setting"),
+        statistic = list(
+            all_continuous() ~ "{mean} ({sd})",
+            all_categorical() ~ "{p}%"
+        )
+    ) %>%
+    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}")
+
+# Print the table
+print(descriptives_table)
+
+```
+
+
+
+
+
+
+
+ 
+
 
 
 

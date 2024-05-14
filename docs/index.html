@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ESC - main</title>
+<title>ESC - ESC-PA_JCMS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,7 +58,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -100,8 +99,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 
+<meta property="og:title" content="ESC - ESC-PA_JCMS">
+<meta property="og:site_name" content="ESC">
 </head>
 
 <body class="nav-fixed">
@@ -125,11 +129,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="dropdown-header">
- <span class="menu-text">about.qmd</span></li>
 </ul>
           </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools-item" href="https://github.com/swhawes/esc">
+            Go to Project Repository
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools-item" href="https://github.com/swhawes/esc/issues">
+            Report a Bug
+            </a>
+          </li>
+      </ul>
+    </div>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -139,14 +156,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
+    <h2 id="toc-title">Table of Contents</h2>
+   
+  <ul>
+  <li><a href="#descriptives-test-for-subset-i-of-variables" id="toc-descriptives-test-for-subset-i-of-variables" class="nav-link active" data-scroll-target="#descriptives-test-for-subset-i-of-variables">Descriptives Test for Subset I of Variables</a></li>
+  <li><a href="#descriptives-test-for-subset-ii-of-variables" id="toc-descriptives-test-for-subset-ii-of-variables" class="nav-link" data-scroll-target="#descriptives-test-for-subset-ii-of-variables">Descriptives Test for Subset II of Variables</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">main</h1>
+<div class="quarto-title-block"><div><h1 class="title">ESC-PA_JCMS</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -164,442 +188,1506 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter columns that are not 100% missing</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> merged[, missing_percentage <span class="sc">&lt;</span> <span class="dv">1</span>]</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply describe function from psych package to get detailed statistics</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>descriptive_stats <span class="ot">&lt;-</span> <span class="fu">describe</span>(filtered_data[<span class="fu">sapply</span>(filtered_data, is.numeric)])</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Print results</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(descriptive_stats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                                         vars    n    mean    sd  median
-AGE_AT_SERVICE_START                        1 3985   16.71  1.52   16.87
-AGE_AT_FIRST_REFERRAL_DATE                  2 3985   14.37  1.83   14.42
-SCORING_VERSION                             3 3985    1.97  0.16    2.00
-TOTALSCORE                                  4 3985   17.74  6.88   18.00
-PRIORSCORE                                  5 3985    0.98  1.23    1.00
-FAMILYSCORE                                 6 3985    2.90  1.70    3.00
-EDUCATIONSCORE                              7 3985    2.76  1.77    3.00
-PEERSCORE                                   8 3985    2.65  1.36    2.00
-SUBSTANCESCORE                              9 3985    1.72  1.46    1.00
-LEISURESCORE                               10 3985    1.68  0.94    2.00
-PERSONALITYSCORE                           11 3985    3.24  1.89    3.00
-ATTITUDESSCORE                             12 3985    1.79  1.41    2.00
-Total weeks of service                     13 3985   21.39 13.78   20.00
-Fiscal Year Ends \r\n(i.e. June 30 Year)   14 3985 2021.77  0.87 2022.00
-                                         trimmed   mad     min     max  range
-AGE_AT_SERVICE_START                       16.76  1.37   11.85   20.91   9.05
-AGE_AT_FIRST_REFERRAL_DATE                 14.40  1.83    0.43   20.07  19.64
-SCORING_VERSION                             2.00  0.00    1.00    2.00   1.00
-TOTALSCORE                                 17.90  7.41    0.00   38.00  38.00
-PRIORSCORE                                  0.77  1.48    0.00    5.00   5.00
-FAMILYSCORE                                 2.89  1.48    0.00    6.00   6.00
-EDUCATIONSCORE                              2.73  1.48    0.00    7.00   7.00
-PEERSCORE                                   2.81  2.97    0.00    4.00   4.00
-SUBSTANCESCORE                              1.63  1.48    0.00    5.00   5.00
-LEISURESCORE                                1.73  1.48    0.00    3.00   3.00
-PERSONALITYSCORE                            3.27  2.97    0.00    7.00   7.00
-ATTITUDESSCORE                              1.71  1.48    0.00    5.00   5.00
-Total weeks of service                     20.14 12.71    0.00  100.00 100.00
-Fiscal Year Ends \r\n(i.e. June 30 Year) 2021.65  1.48 2021.00 2024.00   3.00
-                                          skew kurtosis   se
-AGE_AT_SERVICE_START                     -0.32     0.21 0.02
-AGE_AT_FIRST_REFERRAL_DATE               -0.42     1.90 0.03
-SCORING_VERSION                          -5.88    32.60 0.00
-TOTALSCORE                               -0.18    -0.37 0.11
-PRIORSCORE                                1.24     0.77 0.02
-FAMILYSCORE                               0.08    -0.87 0.03
-EDUCATIONSCORE                            0.12    -0.83 0.03
-PEERSCORE                                -0.52    -0.87 0.02
-SUBSTANCESCORE                            0.33    -1.15 0.02
-LEISURESCORE                             -0.46    -0.65 0.01
-PERSONALITYSCORE                         -0.08    -0.92 0.03
-ATTITUDESSCORE                            0.34    -0.91 0.02
-Total weeks of service                    1.18     2.71 0.22
-Fiscal Year Ends \r\n(i.e. June 30 Year)  0.92    -0.03 0.01</code></pre>
+<pre><code># A tibble: 447 × 2
+   column              percent_missing
+   &lt;chr&gt;                         &lt;dbl&gt;
+ 1 unique_id                         0
+ 2 youth_num_in_cohort               0
+ 3 admission_date                    0
+ 4 service_start_date                0
+ 5 service_end_date                  0
+ 6 dob                               0
+ 7 gender                            0
+ 8 race                              0
+ 9 ethnicity                         0
+10 racnicity                         0
+# ℹ 437 more rows</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create histograms for each numeric column</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">names</span>(filtered_data[<span class="fu">sapply</span>(filtered_data, is.numeric)]), <span class="cf">function</span>(var) {</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(filtered_data, <span class="fu">aes</span>(<span class="at">x =</span> .data[[var]])) <span class="sc">+</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="fu">paste</span>(<span class="st">"Histogram of"</span>, var)) <span class="sc">+</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()  <span class="co"># Adding theme_minimal for better aesthetics</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[[1]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[2]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[3]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[4]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[5]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-5.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[6]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-6.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[7]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-7.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[8]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-8.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[9]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-9.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[10]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-10.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[11]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-11.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[12]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-12.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[13]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-13.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-[[14]]</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-14.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
+<pre><code># A tibble: 2 × 2
+  type        n
+  &lt;chr&gt;   &lt;int&gt;
+1 factor    213
+2 numeric    15</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(descriptive_stats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                                         vars    n    mean    sd  median
-AGE_AT_SERVICE_START                        1 3985   16.71  1.52   16.87
-AGE_AT_FIRST_REFERRAL_DATE                  2 3985   14.37  1.83   14.42
-SCORING_VERSION                             3 3985    1.97  0.16    2.00
-TOTALSCORE                                  4 3985   17.74  6.88   18.00
-PRIORSCORE                                  5 3985    0.98  1.23    1.00
-FAMILYSCORE                                 6 3985    2.90  1.70    3.00
-EDUCATIONSCORE                              7 3985    2.76  1.77    3.00
-PEERSCORE                                   8 3985    2.65  1.36    2.00
-SUBSTANCESCORE                              9 3985    1.72  1.46    1.00
-LEISURESCORE                               10 3985    1.68  0.94    2.00
-PERSONALITYSCORE                           11 3985    3.24  1.89    3.00
-ATTITUDESSCORE                             12 3985    1.79  1.41    2.00
-Total weeks of service                     13 3985   21.39 13.78   20.00
-Fiscal Year Ends \r\n(i.e. June 30 Year)   14 3985 2021.77  0.87 2022.00
-                                         trimmed   mad     min     max  range
-AGE_AT_SERVICE_START                       16.76  1.37   11.85   20.91   9.05
-AGE_AT_FIRST_REFERRAL_DATE                 14.40  1.83    0.43   20.07  19.64
-SCORING_VERSION                             2.00  0.00    1.00    2.00   1.00
-TOTALSCORE                                 17.90  7.41    0.00   38.00  38.00
-PRIORSCORE                                  0.77  1.48    0.00    5.00   5.00
-FAMILYSCORE                                 2.89  1.48    0.00    6.00   6.00
-EDUCATIONSCORE                              2.73  1.48    0.00    7.00   7.00
-PEERSCORE                                   2.81  2.97    0.00    4.00   4.00
-SUBSTANCESCORE                              1.63  1.48    0.00    5.00   5.00
-LEISURESCORE                                1.73  1.48    0.00    3.00   3.00
-PERSONALITYSCORE                            3.27  2.97    0.00    7.00   7.00
-ATTITUDESSCORE                              1.71  1.48    0.00    5.00   5.00
-Total weeks of service                     20.14 12.71    0.00  100.00 100.00
-Fiscal Year Ends \r\n(i.e. June 30 Year) 2021.65  1.48 2021.00 2024.00   3.00
-                                          skew kurtosis   se
-AGE_AT_SERVICE_START                     -0.32     0.21 0.02
-AGE_AT_FIRST_REFERRAL_DATE               -0.42     1.90 0.03
-SCORING_VERSION                          -5.88    32.60 0.00
-TOTALSCORE                               -0.18    -0.37 0.11
-PRIORSCORE                                1.24     0.77 0.02
-FAMILYSCORE                               0.08    -0.87 0.03
-EDUCATIONSCORE                            0.12    -0.83 0.03
-PEERSCORE                                -0.52    -0.87 0.02
-SUBSTANCESCORE                            0.33    -1.15 0.02
-LEISURESCORE                             -0.46    -0.65 0.01
-PERSONALITYSCORE                         -0.08    -0.92 0.03
-ATTITUDESSCORE                            0.34    -0.91 0.02
-Total weeks of service                    1.18     2.71 0.22
-Fiscal Year Ends \r\n(i.e. June 30 Year)  0.92    -0.03 0.01</code></pre>
+<pre><code># A tibble: 1 × 213
+  unique_id youth_num_in_cohort gender  race ethnicity racnicity assessment_type
+      &lt;int&gt;               &lt;int&gt;  &lt;int&gt; &lt;int&gt;     &lt;int&gt;     &lt;int&gt;           &lt;int&gt;
+1      1708                3985      2     5         3         5               3
+# ℹ 206 more variables: assessment_po &lt;int&gt;, total_risk_desc &lt;int&gt;,
+#   prior_risk_desc &lt;int&gt;, family_risk_desc &lt;int&gt;, education_risk_desc &lt;int&gt;,
+#   peer_risk_desc &lt;int&gt;, substance_risk_desc &lt;int&gt;, leisure_risk_desc &lt;int&gt;,
+#   personality_risk_desc &lt;int&gt;, attitude_risk_desc &lt;int&gt;,
+#   `pc_3+_prior_convictions` &lt;int&gt;, `pc_2+_failure_to_comply` &lt;int&gt;,
+#   pc_prior_probation &lt;int&gt;, pc_prior_custody &lt;int&gt;,
+#   `pc_3+_current_convictions` &lt;int&gt;, fc_inadequate_supervision &lt;int&gt;, …</code></pre>
 </div>
 </div>
+<section id="descriptives-test-for-subset-i-of-variables" class="level1">
+<h1>Descriptives Test for Subset I of Variables</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure all character columns are converted to factors</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor))</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a summary table for counts and levels</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>count_levels_summary <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.factor)) <span class="sc">%&gt;%</span>  <span class="co"># Select only factor variables</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), </span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="at">Count =</span> <span class="sc">~</span><span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(.)),</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">Levels =</span> <span class="sc">~</span><span class="fu">nlevels</span>(.)), </span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), </span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Variable"</span>, <span class="st">".value"</span>), </span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_pattern =</span> <span class="st">"(.*)_(.*)"</span>)</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the counts and levels summary table</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(count_levels_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 141 × 3
-   Variable            Count Levels
-   &lt;chr&gt;               &lt;int&gt;  &lt;int&gt;
- 1 UNIQUE_ID            3985   1708
- 2 YOUTH_NUM_IN_COHORT  3985   3985
- 3 GENDER               3985      2
- 4 RACE                 3985      5
- 5 ETHNICITY            3985      3
- 6 RACNICITY            3985      5
- 7 ASSESSMENT_TYPE      3985      3
- 8 ASSESSMENT_PO        3984    624
- 9 Total_Risk_Desc      3985      4
-10 Prior_Risk_Desc      3985      3
-# ℹ 131 more rows</code></pre>
+<pre><code>&lt;div id="yyjnyvvqwo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;
+  &lt;style&gt;#yyjnyvvqwo table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#yyjnyvvqwo thead, #yyjnyvvqwo tbody, #yyjnyvvqwo tfoot, #yyjnyvvqwo tr, #yyjnyvvqwo td, #yyjnyvvqwo th {
+  border-style: none;
+}
+
+#yyjnyvvqwo p {
+  margin: 0;
+  padding: 0;
+}
+
+#yyjnyvvqwo .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#yyjnyvvqwo .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#yyjnyvvqwo .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#yyjnyvvqwo .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#yyjnyvvqwo .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#yyjnyvvqwo .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#yyjnyvvqwo .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#yyjnyvvqwo .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#yyjnyvvqwo .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#yyjnyvvqwo .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#yyjnyvvqwo .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#yyjnyvvqwo .gt_from_md &gt; :first-child {
+  margin-top: 0;
+}
+
+#yyjnyvvqwo .gt_from_md &gt; :last-child {
+  margin-bottom: 0;
+}
+
+#yyjnyvvqwo .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#yyjnyvvqwo .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyjnyvvqwo .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#yyjnyvvqwo .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#yyjnyvvqwo .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#yyjnyvvqwo .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyjnyvvqwo .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#yyjnyvvqwo .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyjnyvvqwo .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#yyjnyvvqwo .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyjnyvvqwo .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yyjnyvvqwo .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyjnyvvqwo .gt_left {
+  text-align: left;
+}
+
+#yyjnyvvqwo .gt_center {
+  text-align: center;
+}
+
+#yyjnyvvqwo .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#yyjnyvvqwo .gt_font_normal {
+  font-weight: normal;
+}
+
+#yyjnyvvqwo .gt_font_bold {
+  font-weight: bold;
+}
+
+#yyjnyvvqwo .gt_font_italic {
+  font-style: italic;
+}
+
+#yyjnyvvqwo .gt_super {
+  font-size: 65%;
+}
+
+#yyjnyvvqwo .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#yyjnyvvqwo .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#yyjnyvvqwo .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#yyjnyvvqwo .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#yyjnyvvqwo .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#yyjnyvvqwo .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#yyjnyvvqwo .gt_indent_5 {
+  text-indent: 25px;
+}
+&lt;/style&gt;
+  &lt;table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"&gt;
+  &lt;thead&gt;
+    
+    &lt;tr class="gt_col_headings"&gt;
+      &lt;th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&amp;lt;strong&amp;gt;Characteristic&amp;lt;/strong&amp;gt;"&gt;&lt;strong&gt;Characteristic&lt;/strong&gt;&lt;/th&gt;
+      &lt;th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&amp;lt;strong&amp;gt;C&amp;lt;/strong&amp;gt;&amp;lt;br&amp;gt;N = 802&amp;lt;span class=&amp;quot;gt_footnote_marks&amp;quot; style=&amp;quot;white-space:nowrap;font-style:italic;font-weight:normal;&amp;quot;&amp;gt;&amp;lt;sup&amp;gt;1&amp;lt;/sup&amp;gt;&amp;lt;/span&amp;gt;"&gt;&lt;strong&gt;C&lt;/strong&gt;&lt;br&gt;N = 802&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;&lt;/th&gt;
+      &lt;th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&amp;lt;strong&amp;gt;R&amp;lt;/strong&amp;gt;&amp;lt;br&amp;gt;N = 3183&amp;lt;span class=&amp;quot;gt_footnote_marks&amp;quot; style=&amp;quot;white-space:nowrap;font-style:italic;font-weight:normal;&amp;quot;&amp;gt;&amp;lt;sup&amp;gt;1&amp;lt;/sup&amp;gt;&amp;lt;/span&amp;gt;"&gt;&lt;strong&gt;R&lt;/strong&gt;&lt;br&gt;N = 3183&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody class="gt_table_body"&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;gender&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;Female&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;25%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;13%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;Male&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;75%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;87%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;race&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;Asian&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0.4%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.1%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;Black&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;31%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;51%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;Multiracial&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.4%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;Native Hawaiian or Pacific Islander&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.1%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;White&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;64%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;43%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;ethnicity&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;Hispanic&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;26%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;13%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;Non-Hispanic&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;73%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;87%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;Unknown&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0.7%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;racnicity&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;BLACK-NH&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;27%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;49%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;HISPANIC&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;26%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;13%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;OTHER&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;3.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;UNKNOWN&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0.7%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;WHITE-NH&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;43%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;34%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;age_at_service_start&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;16.27 (1.53)&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;16.82 (1.50)&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;age_at_first_referral_date&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;14.93 (1.67)&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;14.23 (1.84)&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+  
+  &lt;tfoot class="gt_footnotes"&gt;
+    &lt;tr&gt;
+      &lt;td class="gt_footnote" colspan="3"&gt;&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt; %; Mean (SD)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;
+&lt;/div&gt;</code></pre>
 </div>
 </div>
+</section>
+<section id="descriptives-test-for-subset-ii-of-variables" class="level1">
+<h1>Descriptives Test for Subset II of Variables</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a summary table for frequencies for categories with fewer than 100 levels</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>frequency_summary <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.factor)) <span class="sc">%&gt;%</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(),</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                   <span class="sc">~</span><span class="cf">if</span>(<span class="fu">nlevels</span>(.) <span class="sc">&lt;</span> <span class="dv">100</span>) <span class="fu">list</span>(<span class="fu">table</span>(.)) <span class="cf">else</span> <span class="cn">NA</span>, </span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.col}_Frequency"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">ends_with</span>(<span class="st">"_Frequency"</span>),</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"Variable"</span>,</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"Frequency"</span>,</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_drop_na =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Format the frequency data for better readability</span></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>frequency_summary<span class="sc">$</span>Frequency <span class="ot">&lt;-</span> <span class="fu">sapply</span>(frequency_summary<span class="sc">$</span>Frequency, toString)</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the frequency summary table for factors with less than 100 levels</span></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(frequency_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 134 × 2
-   Variable                      Frequency               
-   &lt;chr&gt;                         &lt;chr&gt;                   
- 1 GENDER_Frequency              619, 3366               
- 2 RACE_Frequency                7, 1871, 204, 4, 1899   
- 3 ETHNICITY_Frequency           614, 3354, 17           
- 4 RACNICITY_Frequency           1784, 614, 143, 17, 1427
- 5 ASSESSMENT_TYPE_Frequency     94, 1750, 2141          
- 6 Total_Risk_Desc_Frequency     1265, 491, 2165, 64     
- 7 Prior_Risk_Desc_Frequency     561, 1907, 1517         
- 8 Family_Risk_Desc_Frequency    785, 1719, 1481         
- 9 Education_Risk_Desc_Frequency 1416, 527, 2042         
-10 Peer_Risk_Desc_Frequency      1729, 635, 1621         
-# ℹ 124 more rows</code></pre>
+<pre><code>&lt;div id="jdusjiaxhf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;
+  &lt;style&gt;#jdusjiaxhf table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#jdusjiaxhf thead, #jdusjiaxhf tbody, #jdusjiaxhf tfoot, #jdusjiaxhf tr, #jdusjiaxhf td, #jdusjiaxhf th {
+  border-style: none;
+}
+
+#jdusjiaxhf p {
+  margin: 0;
+  padding: 0;
+}
+
+#jdusjiaxhf .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#jdusjiaxhf .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#jdusjiaxhf .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#jdusjiaxhf .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#jdusjiaxhf .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#jdusjiaxhf .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#jdusjiaxhf .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#jdusjiaxhf .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#jdusjiaxhf .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#jdusjiaxhf .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#jdusjiaxhf .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jdusjiaxhf .gt_from_md &gt; :first-child {
+  margin-top: 0;
+}
+
+#jdusjiaxhf .gt_from_md &gt; :last-child {
+  margin-bottom: 0;
+}
+
+#jdusjiaxhf .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#jdusjiaxhf .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jdusjiaxhf .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#jdusjiaxhf .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#jdusjiaxhf .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#jdusjiaxhf .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jdusjiaxhf .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#jdusjiaxhf .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jdusjiaxhf .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#jdusjiaxhf .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jdusjiaxhf .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jdusjiaxhf .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jdusjiaxhf .gt_left {
+  text-align: left;
+}
+
+#jdusjiaxhf .gt_center {
+  text-align: center;
+}
+
+#jdusjiaxhf .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#jdusjiaxhf .gt_font_normal {
+  font-weight: normal;
+}
+
+#jdusjiaxhf .gt_font_bold {
+  font-weight: bold;
+}
+
+#jdusjiaxhf .gt_font_italic {
+  font-style: italic;
+}
+
+#jdusjiaxhf .gt_super {
+  font-size: 65%;
+}
+
+#jdusjiaxhf .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#jdusjiaxhf .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#jdusjiaxhf .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#jdusjiaxhf .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#jdusjiaxhf .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#jdusjiaxhf .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#jdusjiaxhf .gt_indent_5 {
+  text-indent: 25px;
+}
+&lt;/style&gt;
+  &lt;table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"&gt;
+  &lt;thead&gt;
+    
+    &lt;tr class="gt_col_headings"&gt;
+      &lt;th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&amp;lt;strong&amp;gt;Characteristic&amp;lt;/strong&amp;gt;"&gt;&lt;strong&gt;Characteristic&lt;/strong&gt;&lt;/th&gt;
+      &lt;th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&amp;lt;strong&amp;gt;C&amp;lt;/strong&amp;gt;&amp;lt;br&amp;gt;N = 802&amp;lt;span class=&amp;quot;gt_footnote_marks&amp;quot; style=&amp;quot;white-space:nowrap;font-style:italic;font-weight:normal;&amp;quot;&amp;gt;&amp;lt;sup&amp;gt;1&amp;lt;/sup&amp;gt;&amp;lt;/span&amp;gt;"&gt;&lt;strong&gt;C&lt;/strong&gt;&lt;br&gt;N = 802&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;&lt;/th&gt;
+      &lt;th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&amp;lt;strong&amp;gt;R&amp;lt;/strong&amp;gt;&amp;lt;br&amp;gt;N = 3183&amp;lt;span class=&amp;quot;gt_footnote_marks&amp;quot; style=&amp;quot;white-space:nowrap;font-style:italic;font-weight:normal;&amp;quot;&amp;gt;&amp;lt;sup&amp;gt;1&amp;lt;/sup&amp;gt;&amp;lt;/span&amp;gt;"&gt;&lt;strong&gt;R&lt;/strong&gt;&lt;br&gt;N = 3183&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody class="gt_table_body"&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;service_type&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;AGGRESSION REPLACEMENT TRAINING (ART) COMMUNITY BASED&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.5%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;AGGRESSION REPLACEMENT TRAINING (ART) RESIDENTIAL PROGRAM&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;BEHAVIOR MANAGEMENT&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;6.8%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;CHALLENGE PROGRAMS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;COGNITIVE BEHAVIORAL THERAPY&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.9%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;19%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;FAMILY COUNSELING&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.6%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;GROUP COUNSELING&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;8.4%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;22%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;INDIVIDUAL COUNSELING&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;10%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;15%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;JOB RELATED TRAINING JOB TRAINING&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;JOB RELATED TRAINING VOCATIONAL COUNSELING&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;6.1%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;JOB RELATED TRAINING: JOB TRAINING&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;MENTORING&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;24%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;MIXED COUNSELING&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.2%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;MULTISYSTEMIC THERAPY (MST)&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;8.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;REMEDIAL ACADEMIC PROGRAM&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;9.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;RESTITUTION/COMMUNITY SERVICE&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.4%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;SOCIAL SKILLS TRAINING&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;18%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;4.5%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;target_dosage&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;100&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.9%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;100 HOURS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;3.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;24&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;28%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;2.8%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;24 HOURS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;24*&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;25&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.2%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;28&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.5%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;30&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;20%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;12%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;30 HOURS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;2.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;40&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;8.4%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;28%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;40 HOURS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;400&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.8%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;45&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.9%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;15%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;45 HOURS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;3.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;60&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;3.0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;72&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;6.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;78&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;24%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;target_duration&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;10&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;12&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;5.3%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.1%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;13&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.6%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;13*&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.3%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;15&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.1%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;16%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;15 WEEKS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;3.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;16&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;23%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;16 WEEKS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;20&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.3%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;4.5%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;20 WEEKS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;24&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;7.1%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;33%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;25&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;15%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;18%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;25 WEEKS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;2.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;26&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;25%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;6.1%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;26 WEEKS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;3.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;4&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;8&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;10%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;number_of_youth:_
+scoring_low_on_the_yls&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;0&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;14%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;1&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;23%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;4.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;11&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;10%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;12&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.6%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.2%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;13&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;2.7%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.9%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;14&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.1%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;15&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.2%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;18&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;2.4%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;2&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;14%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;10%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;22&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;3&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;2.2%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;11%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;4&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;11%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;6.8%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;5&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;1.4%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;9.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;6&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.9%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;8.1%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;7&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;2.1%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;3.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;8&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.7%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;11%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;9&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;6.5%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;service_classification&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;BEH&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;8.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;CART&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.5%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;CBT&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.9%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;18%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;CHA&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;FCMST&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;13%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;GC&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;8.4%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;23%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;IC&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;10%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;14%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;JRT&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;MEN&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;24%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;MIX&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.2%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;RART&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.4%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;RAT&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;9.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;RCS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.4%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;SST&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;18%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;4.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;VC&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.8%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;name_brand_service&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;ART®&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.5%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.4%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;BC&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;1.7%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;CG&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;CLS&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;CT&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;DBT&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;FTJ&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;5.6%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;HND&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;4.9%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;MST&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;13%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;N/A&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;63%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;67%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;NCTI&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.9%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;OTHER&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;5.1%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;SANC&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.2%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;T4C&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;1.2%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.2%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;total_pts._risk_level&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;10&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.6%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;12&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;13&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;16%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.9%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;15&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;5.7%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;17&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;6.1%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;2&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;6.7%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;20&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;7.6%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;15%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;22&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;6.1%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;23&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;1.5%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;52%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;25&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;19%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;12%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;5&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;18%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.8%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;7&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;5.7%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;3.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;8&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.7%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;total_pts._amount_of_service&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;0&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;18%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;8.8%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;10&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.9%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;20%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;12&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.1%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;10%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;14&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;21%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;14%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;16&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.9%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;12%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;18&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;1.9%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;2.1%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;2&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.1%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;20&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;4&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;8.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.9%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;6&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;7.6%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;9.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;8&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;22%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;12%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;target_weeks&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;10&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.4%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;12&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.4%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;13&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;13%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;15&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.9%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;18%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;16&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;18%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;4.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;20&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.8%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;24&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;8.4%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;31%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;25&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;14%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;15%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;26&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;24%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;15%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;4&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;1.6%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;8&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.5%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;target_hours&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;100&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;9.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;24&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;28%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;4.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;25&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;4.2%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;28&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;7.4%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;30&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;23%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;14%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;40&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;8.4%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;29%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;45&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;3.9%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;18%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;520&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;5.7%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;60&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;9.0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;3.0%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;72&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;0%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;8.3%&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td headers="label" class="gt_row gt_left"&gt;&nbsp;&nbsp;&nbsp;&nbsp;78&lt;/td&gt;
+&lt;td headers="stat_1" class="gt_row gt_center"&gt;24%&lt;/td&gt;
+&lt;td headers="stat_2" class="gt_row gt_center"&gt;0%&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+  
+  &lt;tfoot class="gt_footnotes"&gt;
+    &lt;tr&gt;
+      &lt;td class="gt_footnote" colspan="3"&gt;&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt; %&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;
+&lt;/div&gt;</code></pre>
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure all character columns are converted to factors</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor))</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a summary table for counts and levels</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>count_levels_summary <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.factor)) <span class="sc">%&gt;%</span>  <span class="co"># Select only factor variables</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), </span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="at">Count =</span> <span class="sc">~</span><span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(.)),</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">Levels =</span> <span class="sc">~</span><span class="fu">nlevels</span>(.)), </span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), </span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Variable"</span>, <span class="st">".value"</span>), </span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_pattern =</span> <span class="st">"(.*)_(.*)"</span>)</span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the counts and levels summary table</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(count_levels_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 141 × 3
-   Variable            Count Levels
-   &lt;chr&gt;               &lt;int&gt;  &lt;int&gt;
- 1 UNIQUE_ID            3985   1708
- 2 YOUTH_NUM_IN_COHORT  3985   3985
- 3 GENDER               3985      2
- 4 RACE                 3985      5
- 5 ETHNICITY            3985      3
- 6 RACNICITY            3985      5
- 7 ASSESSMENT_TYPE      3985      3
- 8 ASSESSMENT_PO        3984    624
- 9 Total_Risk_Desc      3985      4
-10 Prior_Risk_Desc      3985      3
-# ℹ 131 more rows</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a summary table for frequencies for categories with fewer than 100 levels</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>frequency_summary <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.factor)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(),</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>                   <span class="sc">~</span><span class="cf">if</span>(<span class="fu">nlevels</span>(.) <span class="sc">&lt;</span> <span class="dv">100</span>) <span class="fu">list</span>(<span class="fu">enframe</span>(<span class="fu">table</span>(.))) <span class="cf">else</span> <span class="cn">NA</span>, </span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.col}_Frequency"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">ends_with</span>(<span class="st">"_Frequency"</span>),</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"Variable"</span>,</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"Frequency"</span>,</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_drop_na =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Explode the list column into separate rows for each category</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>frequency_summary <span class="ot">&lt;-</span> frequency_summary <span class="sc">%&gt;%</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(Frequency)</span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Rename columns for clarity</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(frequency_summary)[<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Category"</span>, <span class="st">"Count"</span>)</span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the frequency summary table for factors with less than 100 levels</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(frequency_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1,206 × 3
-   Variable            name                                Category   
-   &lt;chr&gt;               &lt;chr&gt;                               &lt;table[1d]&gt;
- 1 GENDER_Frequency    Female                               619       
- 2 GENDER_Frequency    Male                                3366       
- 3 RACE_Frequency      Asian                                  7       
- 4 RACE_Frequency      Black                               1871       
- 5 RACE_Frequency      Multiracial                          204       
- 6 RACE_Frequency      Native Hawaiian or Pacific Islander    4       
- 7 RACE_Frequency      White                               1899       
- 8 ETHNICITY_Frequency Hispanic                             614       
- 9 ETHNICITY_Frequency Non-Hispanic                        3354       
-10 ETHNICITY_Frequency Unknown                               17       
-# ℹ 1,196 more rows</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate bar plots for each categorical column</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(filtered_data[<span class="fu">sapply</span>(filtered_data, is.factor)]), <span class="cf">function</span>(var) {</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(filtered_data, <span class="fu">aes</span>(<span class="at">x =</span> .data[[var]], <span class="at">fill =</span> .data[[var]])) <span class="sc">+</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Frequency of"</span>, var), <span class="at">x =</span> var, <span class="at">fill =</span> var) <span class="sc">+</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>))  <span class="co"># Rotate x-axis labels for readability</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create bar plots for each factor column</span></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co"># lapply(names(filtered_data[sapply(filtered_data, is.factor)]), function(var) {</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   ggplot(filtered_data, aes_string(x = var, fill = var)) +</span></span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co">#     geom_bar() +</span></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     ggtitle(paste("Frequency of", var)) +</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     theme_minimal()</span></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co"># })</span></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Export numeric descriptives to CSV</span></span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a><span class="co">#write.csv(descriptive_stats, "/Users/shawes/PA_JCMS/data/Descriptive_Statistics_Numeric.csv")</span></span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="co"># For categorical data, it may be necessary to convert list outputs to data frames first, not shown here.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
+<!-- -->
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -681,6 +1769,77 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+          // default icon
+          link.classList.add("external");
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -988,10 +2147,239 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="an">title:</span><span class="co"> "ESC-PA_JCMS"</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="an">format:</span><span class="co"> html</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">---</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="in">```{r}</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#| echo: FALSE # The content of this code block will not be rendered</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#| output: FALSE # Output from this code block will not be rendered</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co"># This code configures knitr code chunk options</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    <span class="at">echo =</span> T, <span class="at">message =</span> F, <span class="at">warning =</span> F, <span class="at">error =</span> F, <span class="at">output =</span> T,</span>
+<span id="cb6-16"><a href="#cb6-16"></a>    <span class="at">comment =</span> <span class="cn">NA</span>, <span class="at">cache =</span> T, <span class="at">code_folding =</span> T,</span>
+<span id="cb6-17"><a href="#cb6-17"></a>    <span class="at">R.options =</span> <span class="fu">list</span>(<span class="at">width =</span> <span class="dv">220</span>, <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb6-18"><a href="#cb6-18"></a>    <span class="at">fig.align =</span> <span class="st">"center"</span>,</span>
+<span id="cb6-19"><a href="#cb6-19"></a>    <span class="at">out.width =</span> <span class="st">"75%"</span>, <span class="at">fig.asp =</span> .<span class="dv">75</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a>)</span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="in">```</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="in">```{r}</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#| output: false</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb6-31"><a href="#cb6-31"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb6-32"><a href="#cb6-32"></a><span class="fu">library</span>(openxlsx)</span>
+<span id="cb6-33"><a href="#cb6-33"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb6-34"><a href="#cb6-34"></a><span class="fu">library</span>(psych)</span>
+<span id="cb6-35"><a href="#cb6-35"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb6-36"><a href="#cb6-36"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb6-37"><a href="#cb6-37"></a><span class="fu">library</span>(gtsummary)</span>
+<span id="cb6-38"><a href="#cb6-38"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb6-39"><a href="#cb6-39"></a></span>
+<span id="cb6-40"><a href="#cb6-40"></a><span class="co"># Read the data from an Excel file</span></span>
+<span id="cb6-41"><a href="#cb6-41"></a>merged <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"/Users/shawes/PA_JCMS/data/Merged_Files_NoRecid.xlsx"</span>)</span>
+<span id="cb6-42"><a href="#cb6-42"></a></span>
+<span id="cb6-43"><a href="#cb6-43"></a>merged <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-44"><a href="#cb6-44"></a>    <span class="fu">rename</span>(</span>
+<span id="cb6-45"><a href="#cb6-45"></a>        <span class="at">service_name_1 =</span> <span class="st">"Service Name"</span>, <span class="co"># Adjust indices as appropriate</span></span>
+<span id="cb6-46"><a href="#cb6-46"></a>        <span class="at">service_type_1 =</span> <span class="st">"Service Type"</span></span>
+<span id="cb6-47"><a href="#cb6-47"></a>    )</span>
+<span id="cb6-48"><a href="#cb6-48"></a></span>
+<span id="cb6-49"><a href="#cb6-49"></a><span class="co"># Assuming 'df' is your dataframe</span></span>
+<span id="cb6-50"><a href="#cb6-50"></a>merged <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-51"><a href="#cb6-51"></a>    <span class="fu">rename_all</span>(<span class="sc">~</span> <span class="fu">str_to_lower</span>(<span class="fu">str_replace_all</span>(., <span class="at">pattern =</span> <span class="st">" "</span>, <span class="at">replacement =</span> <span class="st">"_"</span>)))</span>
+<span id="cb6-52"><a href="#cb6-52"></a></span>
+<span id="cb6-53"><a href="#cb6-53"></a><span class="in">```</span></span>
+<span id="cb6-54"><a href="#cb6-54"></a></span>
+<span id="cb6-57"><a href="#cb6-57"></a><span class="in">```{r}</span></span>
+<span id="cb6-58"><a href="#cb6-58"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-59"><a href="#cb6-59"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-60"><a href="#cb6-60"></a></span>
+<span id="cb6-61"><a href="#cb6-61"></a><span class="co"># Compute the percentage of missing data for each column</span></span>
+<span id="cb6-62"><a href="#cb6-62"></a>missing_percentages <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-63"><a href="#cb6-63"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">round</span>(<span class="fu">mean</span>(<span class="fu">is.na</span>(.)) <span class="sc">*</span> <span class="dv">100</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb6-64"><a href="#cb6-64"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"column"</span>, <span class="at">values_to =</span> <span class="st">"percent_missing"</span>)</span>
+<span id="cb6-65"><a href="#cb6-65"></a></span>
+<span id="cb6-66"><a href="#cb6-66"></a><span class="co"># Print the results to check</span></span>
+<span id="cb6-67"><a href="#cb6-67"></a><span class="fu">print</span>(missing_percentages)</span>
+<span id="cb6-68"><a href="#cb6-68"></a></span>
+<span id="cb6-69"><a href="#cb6-69"></a><span class="in">```</span></span>
+<span id="cb6-70"><a href="#cb6-70"></a></span>
+<span id="cb6-71"><a href="#cb6-71"></a></span>
+<span id="cb6-74"><a href="#cb6-74"></a><span class="in">```{r}</span></span>
+<span id="cb6-75"><a href="#cb6-75"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-76"><a href="#cb6-76"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-77"><a href="#cb6-77"></a><span class="co">#| output: false</span></span>
+<span id="cb6-78"><a href="#cb6-78"></a></span>
+<span id="cb6-79"><a href="#cb6-79"></a><span class="co"># Identify columns with less than 90% missing data</span></span>
+<span id="cb6-80"><a href="#cb6-80"></a>cols_to_keep <span class="ot">&lt;-</span> missing_percentages <span class="sc">%&gt;%</span></span>
+<span id="cb6-81"><a href="#cb6-81"></a>    <span class="fu">filter</span>(percent_missing <span class="sc">&lt;</span> <span class="dv">90</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-82"><a href="#cb6-82"></a>    <span class="fu">pull</span>(column)</span>
+<span id="cb6-83"><a href="#cb6-83"></a></span>
+<span id="cb6-84"><a href="#cb6-84"></a><span class="co"># Filter the original dataframe to keep these columns</span></span>
+<span id="cb6-85"><a href="#cb6-85"></a>merged <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-86"><a href="#cb6-86"></a>    <span class="fu">select</span>(<span class="fu">all_of</span>(cols_to_keep))</span>
+<span id="cb6-87"><a href="#cb6-87"></a></span>
+<span id="cb6-88"><a href="#cb6-88"></a>merged <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-89"><a href="#cb6-89"></a>    <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(.)) <span class="sc">*</span> <span class="dv">100</span> <span class="sc">&lt;</span> <span class="dv">90</span>))</span>
+<span id="cb6-90"><a href="#cb6-90"></a></span>
+<span id="cb6-91"><a href="#cb6-91"></a><span class="co"># Set character columns to factors</span></span>
+<span id="cb6-92"><a href="#cb6-92"></a>merged <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-93"><a href="#cb6-93"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor))</span>
+<span id="cb6-94"><a href="#cb6-94"></a></span>
+<span id="cb6-95"><a href="#cb6-95"></a><span class="co"># Subset the dataframe to include only 'factor' or 'numeric' columns</span></span>
+<span id="cb6-96"><a href="#cb6-96"></a>merged <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-97"><a href="#cb6-97"></a>    <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="fu">is.factor</span>(.) <span class="sc">||</span> <span class="fu">is.numeric</span>(.)))</span>
+<span id="cb6-98"><a href="#cb6-98"></a></span>
+<span id="cb6-99"><a href="#cb6-99"></a><span class="in">```</span></span>
+<span id="cb6-100"><a href="#cb6-100"></a></span>
+<span id="cb6-101"><a href="#cb6-101"></a></span>
+<span id="cb6-104"><a href="#cb6-104"></a><span class="in">```{r}</span></span>
+<span id="cb6-105"><a href="#cb6-105"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-106"><a href="#cb6-106"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-107"><a href="#cb6-107"></a></span>
+<span id="cb6-108"><a href="#cb6-108"></a><span class="co"># List the data type for each column in the dataframe 'merged'</span></span>
+<span id="cb6-109"><a href="#cb6-109"></a>column_types <span class="ot">&lt;-</span> <span class="fu">map_chr</span>(merged, class)</span>
+<span id="cb6-110"><a href="#cb6-110"></a><span class="co"># print(column_types)</span></span>
+<span id="cb6-111"><a href="#cb6-111"></a></span>
+<span id="cb6-112"><a href="#cb6-112"></a><span class="co"># Count the number of each type of data</span></span>
+<span id="cb6-113"><a href="#cb6-113"></a>type_counts <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">type =</span> column_types) <span class="sc">%&gt;%</span></span>
+<span id="cb6-114"><a href="#cb6-114"></a>    <span class="fu">count</span>(type)</span>
+<span id="cb6-115"><a href="#cb6-115"></a><span class="co"># Print the results to check</span></span>
+<span id="cb6-116"><a href="#cb6-116"></a><span class="fu">print</span>(type_counts)</span>
+<span id="cb6-117"><a href="#cb6-117"></a><span class="in">```</span></span>
+<span id="cb6-118"><a href="#cb6-118"></a></span>
+<span id="cb6-119"><a href="#cb6-119"></a></span>
+<span id="cb6-122"><a href="#cb6-122"></a><span class="in">```{r}</span></span>
+<span id="cb6-123"><a href="#cb6-123"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-124"><a href="#cb6-124"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-125"><a href="#cb6-125"></a></span>
+<span id="cb6-126"><a href="#cb6-126"></a><span class="co"># Create a named list of the number of levels for factor variables</span></span>
+<span id="cb6-127"><a href="#cb6-127"></a>factor_levels <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-128"><a href="#cb6-128"></a>    <span class="fu">select_if</span>(is.factor) <span class="sc">%&gt;%</span></span>
+<span id="cb6-129"><a href="#cb6-129"></a>    <span class="fu">map_dfr</span>(<span class="sc">~</span> <span class="fu">nlevels</span>(.), <span class="at">.id =</span> <span class="st">"Variable"</span>) <span class="co"># Using map_dfr to return a dataframe</span></span>
+<span id="cb6-130"><a href="#cb6-130"></a></span>
+<span id="cb6-131"><a href="#cb6-131"></a><span class="co"># Print the results</span></span>
+<span id="cb6-132"><a href="#cb6-132"></a><span class="fu">print</span>(factor_levels)</span>
+<span id="cb6-133"><a href="#cb6-133"></a></span>
+<span id="cb6-134"><a href="#cb6-134"></a><span class="in">```</span></span>
+<span id="cb6-135"><a href="#cb6-135"></a></span>
+<span id="cb6-136"><a href="#cb6-136"></a><span class="fu"># Descriptives Test for Subset I of Variables</span></span>
+<span id="cb6-139"><a href="#cb6-139"></a><span class="in">```{r}</span></span>
+<span id="cb6-140"><a href="#cb6-140"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-141"><a href="#cb6-141"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-142"><a href="#cb6-142"></a></span>
+<span id="cb6-143"><a href="#cb6-143"></a><span class="co"># Calculate missing percentages for each column of interest</span></span>
+<span id="cb6-144"><a href="#cb6-144"></a>missing_percentages <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-145"><a href="#cb6-145"></a>    <span class="fu">select</span>(setting, gender, race, ethnicity, racnicity, age_at_service_start, age_at_first_referral_date) <span class="sc">%&gt;%</span></span>
+<span id="cb6-146"><a href="#cb6-146"></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(.)) <span class="sc">/</span> <span class="fu">n</span>() <span class="sc">*</span> <span class="dv">100</span>, <span class="at">.names =</span> <span class="st">"missing_{.col}"</span>))</span>
+<span id="cb6-147"><a href="#cb6-147"></a></span>
+<span id="cb6-148"><a href="#cb6-148"></a><span class="co"># Convert to a format suitable for addition to gtsummary table</span></span>
+<span id="cb6-149"><a href="#cb6-149"></a>missing_percentages <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(missing_percentages, <span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"missing_percent"</span>)</span>
+<span id="cb6-150"><a href="#cb6-150"></a></span>
+<span id="cb6-151"><a href="#cb6-151"></a><span class="co"># Prepare the descriptive statistics table</span></span>
+<span id="cb6-152"><a href="#cb6-152"></a>descriptives_table <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-153"><a href="#cb6-153"></a>    <span class="fu">select</span>(setting, gender, race, ethnicity, racnicity, age_at_service_start, age_at_first_referral_date) <span class="sc">%&gt;%</span></span>
+<span id="cb6-154"><a href="#cb6-154"></a>    <span class="fu">tbl_summary</span>(</span>
+<span id="cb6-155"><a href="#cb6-155"></a>        <span class="at">by =</span> setting, <span class="co"># Optional: if you want to group by gender</span></span>
+<span id="cb6-156"><a href="#cb6-156"></a>        <span class="at">missing =</span> <span class="st">"no"</span>,</span>
+<span id="cb6-157"><a href="#cb6-157"></a>        <span class="co"># label = list(Setting, ~"Setting"),</span></span>
+<span id="cb6-158"><a href="#cb6-158"></a>        <span class="at">statistic =</span> <span class="fu">list</span>(</span>
+<span id="cb6-159"><a href="#cb6-159"></a>            <span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>,</span>
+<span id="cb6-160"><a href="#cb6-160"></a>            <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span></span>
+<span id="cb6-161"><a href="#cb6-161"></a>        )</span>
+<span id="cb6-162"><a href="#cb6-162"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-163"><a href="#cb6-163"></a>    <span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>)</span>
+<span id="cb6-164"><a href="#cb6-164"></a></span>
+<span id="cb6-165"><a href="#cb6-165"></a><span class="co"># Print the table to see if it works without the modifications</span></span>
+<span id="cb6-166"><a href="#cb6-166"></a><span class="fu">print</span>(descriptives_table)</span>
+<span id="cb6-167"><a href="#cb6-167"></a></span>
+<span id="cb6-168"><a href="#cb6-168"></a><span class="in">```</span></span>
+<span id="cb6-169"><a href="#cb6-169"></a></span>
+<span id="cb6-170"><a href="#cb6-170"></a><span class="fu"># Descriptives Test for Subset II of Variables</span></span>
+<span id="cb6-173"><a href="#cb6-173"></a><span class="in">```{r}</span></span>
+<span id="cb6-174"><a href="#cb6-174"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-175"><a href="#cb6-175"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-176"><a href="#cb6-176"></a><span class="co">#| output: false</span></span>
+<span id="cb6-177"><a href="#cb6-177"></a></span>
+<span id="cb6-178"><a href="#cb6-178"></a><span class="co"># Specify the variables to include</span></span>
+<span id="cb6-179"><a href="#cb6-179"></a>variables_to_include <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb6-180"><a href="#cb6-180"></a>    <span class="st">"setting"</span>, <span class="st">"service_type"</span>,</span>
+<span id="cb6-181"><a href="#cb6-181"></a>    <span class="st">"target_dosage"</span>, <span class="st">"target_duration"</span>,</span>
+<span id="cb6-182"><a href="#cb6-182"></a>    <span class="st">"number_of_youth:_</span><span class="sc">\r\n</span><span class="st">scoring_low_on_the_yls"</span>,</span>
+<span id="cb6-183"><a href="#cb6-183"></a>    <span class="st">"service_classification"</span>, <span class="st">"name_brand_service"</span>,</span>
+<span id="cb6-184"><a href="#cb6-184"></a>    <span class="st">"total_pts._risk_level"</span>, <span class="st">"total_pts._amount_of_service"</span>,</span>
+<span id="cb6-185"><a href="#cb6-185"></a>    <span class="st">"target_weeks"</span>, <span class="st">"target_hours"</span></span>
+<span id="cb6-186"><a href="#cb6-186"></a>)</span>
+<span id="cb6-187"><a href="#cb6-187"></a></span>
+<span id="cb6-188"><a href="#cb6-188"></a><span class="co"># Filter the merged dataframe to include only the specified variables, along with 'Setting' if it's a grouping variable</span></span>
+<span id="cb6-189"><a href="#cb6-189"></a>descriptive_data <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-190"><a href="#cb6-190"></a>    <span class="fu">select</span>(setting, <span class="fu">all_of</span>(variables_to_include))</span>
+<span id="cb6-191"><a href="#cb6-191"></a></span>
+<span id="cb6-192"><a href="#cb6-192"></a><span class="in">```</span></span>
+<span id="cb6-193"><a href="#cb6-193"></a></span>
+<span id="cb6-196"><a href="#cb6-196"></a><span class="in">```{r}</span></span>
+<span id="cb6-197"><a href="#cb6-197"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-198"><a href="#cb6-198"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-199"><a href="#cb6-199"></a></span>
+<span id="cb6-200"><a href="#cb6-200"></a><span class="co"># Generate descriptive statistics table</span></span>
+<span id="cb6-201"><a href="#cb6-201"></a><span class="co"># Prepare the descriptive statistics table</span></span>
+<span id="cb6-202"><a href="#cb6-202"></a>descriptives_table <span class="ot">&lt;-</span> descriptive_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-203"><a href="#cb6-203"></a>    <span class="fu">select</span>(</span>
+<span id="cb6-204"><a href="#cb6-204"></a>        <span class="st">"setting"</span>, <span class="st">"service_type"</span>,</span>
+<span id="cb6-205"><a href="#cb6-205"></a>        <span class="st">"target_dosage"</span>, <span class="st">"target_duration"</span>,</span>
+<span id="cb6-206"><a href="#cb6-206"></a>        <span class="st">"number_of_youth:_</span><span class="sc">\r\n</span><span class="st">scoring_low_on_the_yls"</span>,</span>
+<span id="cb6-207"><a href="#cb6-207"></a>        <span class="st">"service_classification"</span>, <span class="st">"name_brand_service"</span>,</span>
+<span id="cb6-208"><a href="#cb6-208"></a>        <span class="st">"total_pts._risk_level"</span>, <span class="st">"total_pts._amount_of_service"</span>,</span>
+<span id="cb6-209"><a href="#cb6-209"></a>        <span class="st">"target_weeks"</span>, <span class="st">"target_hours"</span></span>
+<span id="cb6-210"><a href="#cb6-210"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-211"><a href="#cb6-211"></a>    <span class="fu">tbl_summary</span>(</span>
+<span id="cb6-212"><a href="#cb6-212"></a>        <span class="at">by =</span> setting, <span class="co"># Optional: if you want to group by gender</span></span>
+<span id="cb6-213"><a href="#cb6-213"></a>        <span class="at">missing =</span> <span class="st">"no"</span>,</span>
+<span id="cb6-214"><a href="#cb6-214"></a>        <span class="co"># label = list(Setting, ~"Setting"),</span></span>
+<span id="cb6-215"><a href="#cb6-215"></a>        <span class="at">statistic =</span> <span class="fu">list</span>(</span>
+<span id="cb6-216"><a href="#cb6-216"></a>            <span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>,</span>
+<span id="cb6-217"><a href="#cb6-217"></a>            <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span></span>
+<span id="cb6-218"><a href="#cb6-218"></a>        )</span>
+<span id="cb6-219"><a href="#cb6-219"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-220"><a href="#cb6-220"></a>    <span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>)</span>
+<span id="cb6-221"><a href="#cb6-221"></a></span>
+<span id="cb6-222"><a href="#cb6-222"></a><span class="co"># Print the table</span></span>
+<span id="cb6-223"><a href="#cb6-223"></a><span class="fu">print</span>(descriptives_table)</span>
+<span id="cb6-224"><a href="#cb6-224"></a></span>
+<span id="cb6-225"><a href="#cb6-225"></a><span class="in">```</span></span>
+<span id="cb6-226"><a href="#cb6-226"></a></span>
+<span id="cb6-227"><a href="#cb6-227"></a></span>
+<span id="cb6-228"><a href="#cb6-228"></a></span>
+<span id="cb6-229"><a href="#cb6-229"></a></span>
+<span id="cb6-230"><a href="#cb6-230"></a></span>
+<span id="cb6-231"><a href="#cb6-231"></a></span>
+<span id="cb6-232"><a href="#cb6-232"></a></span>
+<span id="cb6-233"><a href="#cb6-233"></a> </span>
+<span id="cb6-234"><a href="#cb6-234"></a></span>
+<span id="cb6-235"><a href="#cb6-235"></a></span>
+<span id="cb6-236"><a href="#cb6-236"></a></span>
+<span id="cb6-237"><a href="#cb6-237"></a></span>
+<span id="cb6-238"><a href="#cb6-238"></a></span>
+<span id="cb6-239"><a href="#cb6-239"></a></span>
+<span id="cb6-240"><a href="#cb6-240"></a></span>
+<span id="cb6-241"><a href="#cb6-241"></a></span>
+<span id="cb6-242"><a href="#cb6-242"></a></span>
+<span id="cb6-243"><a href="#cb6-243"></a></span>
+<span id="cb6-244"><a href="#cb6-244"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 
 
 
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
