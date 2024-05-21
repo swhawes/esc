@@ -347,10 +347,13 @@ saveWidget(
 ```
 
 
-## Table 3: Categorical Outcomes by Setting
+
 ```{r}
 #| echo: false
 #| warning: false
+#| output: false
+
+## Table 3: Categorical Outcomes by Setting
 
 # Load necessary libraries
 library(tidyverse)
@@ -467,7 +470,7 @@ saveWidget(
 
 ```
 
-## JUST RETESTING (Table 3: Categorical Outcomes by Setting)
+## Table 3: Categorical Outcomes by Setting
 ```{r}
 #| echo: false
 #| warning: false
