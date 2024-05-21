@@ -1,13 +1,6 @@
 ---
-title: "ESC-PA_JCMS"
+title: "ESC-Revalidation"
 ---
-
----
-title: "scratch"
-format: html
-editor: visual
----
-
 
 ```{r}
 #| echo: false
@@ -28,17 +21,19 @@ library(scales)
 library(janitor)
 library(DT)
 library(dlookr)
+library(htmlwidgets)
 
 # Read the data from an Excel file
 merged <- read_excel("/Users/shawes/PA_JCMS/data/Merged_Files_NoRecid.xlsx")
 
 ```
 
-## % Missingness by Variable
 ```{r}
 #| echo: false
 #| warning: false
 #| output: false
+
+## % Missingness by Variable
 
 # Calculate the percentage of missing data for each column
 missing_data_percentages <- merged %>%
@@ -60,6 +55,7 @@ merged <- merged %>%
 ```{r}
 #| echo: false
 #| warning: false
+#| output: false
 
 # List of sensitive variables to exclude
 sensitive_vars <- c("unique_id", "youth_num_in_cohort", "mhs2_juvenile_id", "dob", "assessment_po")
@@ -77,6 +73,13 @@ clean_variable_names <- function(merged) {
     names(merged) <- cleaned_names
     return(merged)
 }
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
 
 # Function to calculate means and standard deviations for numeric columns
 calculate_means_sds <- function(merged) {
@@ -168,6 +171,13 @@ mask_sensitive_data <- function(merged, sensitive_vars) {
 # List of sensitive variables to exclude
 sensitive_vars <- c("unique_id", "youth_num_in_cohort", "mhs2_juvenile_id", "dob", "assessment_po")
 
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
+
 # Apply the cleaning function to the dataset
 merged_clean <- clean_variable_names(merged)
 
@@ -191,6 +201,13 @@ mapping_table <- tibble(
 ) %>%
     filter(!cleaned_name %in% sensitive_vars)
 
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
+
 # Calculate means and standard deviations for numeric columns
 means_sds <- calculate_means_sds(merged_clean)
 
@@ -202,6 +219,12 @@ date_statistics <- calculate_date_statistics(merged_clean)
 
 # Count the number of levels for factor variables
 num_levels <- count_levels(merged_clean)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
 
 # Combine means, modes, date statistics, and sensitive summaries into separate columns
 mapping_table <- mapping_table %>%
@@ -220,6 +243,12 @@ mapping_table <- mapping_table %>%
 # Reorder the columns so that summary_statistic is before original_name
 mapping_table <- mapping_table %>%
     select(cleaned_name, mean_sd, mode, date_range, num_levels, original_name, types)
+```
+
+## Table 1: Overall Descrptives
+```{r}
+#| echo: false
+#| warning: false
 
 # Render the table using DT::datatable with tooltips and better formatting
 datatable(mapping_table,
@@ -242,102 +271,322 @@ datatable(mapping_table,
 
 
 ```
-
-<!-- ```{r}
+## Table 2: Continuous Outcomes by Setting
+```{r}
 #| echo: false
 #| warning: false
-#| execution: false
 
-# Split the data based on the levels of the 'setting' variable
-data_C <- merged_clean %>% filter(setting == "C")
-data_R <- merged_clean %>% filter(setting == "R")
+# Filter to keep only numeric variables
+numeric_vars <- merged_clean %>% select(where(is.numeric))
 
-# Function to perform t-tests for continuous variables
-perform_t_tests <- function(data) {
-    continuous_vars <- data %>%
-        select_if(is.numeric) %>%
-        names()
-    t_test_results <- lapply(continuous_vars, function(var) {
-        t.test(data[[var]] ~ data$setting)
-    })
-    names(t_test_results) <- continuous_vars
-    return(t_test_results)
-}
-
-# Function to perform chi-square tests for categorical variables
-perform_chi_square_tests <- function(data) {
-    categorical_vars <- data %>%
-        select_if(is.factor) %>%
-        names()
-    chi_square_results <- lapply(categorical_vars, function(var) {
-        table_var <- table(data[[var]], data$setting)
-        chisq.test(table_var)
-    })
-    names(chi_square_results) <- categorical_vars
-    return(chi_square_results)
-}
-
-# Perform t-tests for continuous variables
-t_test_results <- perform_t_tests(merged_clean)
-# print("T-test Results for Continuous Variables")
-# t_test_results
-
-# Perform chi-square tests for categorical variables
-chi_square_results <- perform_chi_square_tests(merged_clean)
-# print("Chi-square Test Results for Categorical Variables")
-# chi_square_results
+# Add the 'setting' variable back to the numeric-only data frame
+numeric_vars <- numeric_vars %>%
+  mutate(setting = merged_clean$setting)
 
 # Create a summary table for both settings
 summary_table <- tbl_summary(
-    data = merged,
-    by = setting,
-    missing = "no",
-    statistic = list(
-        all_continuous() ~ "{mean} ({sd})",
-        all_categorical() ~ "{n} ({p}%)"
-    )
+  data = numeric_vars,
+  by = setting,
+  missing = "no",
+  statistic = list(
+    all_continuous() ~ "{mean} ({sd})"
+  )
 ) %>%
-    add_p() %>%
-    bold_labels() %>%
-    modify_header(label ~ "**Variable**") %>%
-    modify_caption("**Table 1: Descriptive Statistics by Setting**") %>%
-    modify_footnote(
-        all_stat_cols() ~ "Mean (SD) for continuous variables, N (%) for categorical variables"
-    )
+  add_p() %>%
+  bold_labels() %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_caption("**Table 1: Descriptive Statistics by Setting**") %>%
+  modify_footnote(
+    all_stat_cols() ~ "Mean (SD) for continuous variables"
+  )
 
 # Convert the gtsummary table to a data frame
 summary_table_df <- as_tibble(summary_table, col_labels = TRUE)
 
+# Rename columns to match expected names
+colnames(summary_table_df) <- c("Variable", "C", "R", "p_value")
+
 # Render the table using DT
 datatable(
-    summary_table_df,
-    extensions = "Buttons",
-    options = list(
-        dom = "Bfrtip",
-        buttons = c("copy", "csv", "excel", "pdf", "print"),
-        pageLength = 5,
-        autoWidth = TRUE,
-        columnDefs = list(list(width = "200px", targets = 1))
-    )
+  summary_table_df,
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+    pageLength = 5,
+    autoWidth = TRUE,
+    columnDefs = list(list(width = '200px', targets = 1))
+  )
 ) %>% formatStyle(
-    "**p-value**",
-    target = "row",
-    backgroundColor = styleInterval(0.05, c("white", "yellow"))
+  'p_value', target = 'row',
+  backgroundColor = styleInterval(0.05, c('white', 'yellow'))
 )
 
-# Print summary table with p-values
-# print(summary_table)
+# Save the DT output as an HTML file
+saveWidget(
+  datatable(
+    summary_table_df,
+    extensions = 'Buttons',
+    options = list(
+      dom = 'Bfrtip',
+      buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+      pageLength = 5,
+      autoWidth = TRUE,
+      columnDefs = list(list(width = '200px', targets = 1))
+    )
+  ) %>% formatStyle(
+    'p_value', target = 'row',
+    backgroundColor = styleInterval(0.05, c('white', 'yellow'))
+  ),
+  "summary_table.html"
+)
 
-# Save summary table to an HTML file
-# gtsave(summary_table, "summary_table.html")
-
-``` -->
 
 
 
+```
 
 
+## Table 3: Categorical Outcomes by Setting
+```{r}
+#| echo: false
+#| warning: false
 
+# Load necessary libraries
+library(tidyverse)
+library(readxl)
+library(gtsummary)
+library(DT)
+library(htmlwidgets)
+
+# Filter to keep only factor variables with <= 20 levels
+factor_vars <- merged_clean %>%
+  select(where(~ is.factor(.) && nlevels(.) <= 20))
+
+# Add the 'setting' variable back to the factor-only data frame
+factor_vars <- factor_vars %>%
+  mutate(setting = merged_clean$setting)
+
+# Ensure that the 'setting' variable is a factor
+factor_vars$setting <- as.factor(factor_vars$setting)
+
+# Create a summary table for factor variables with <= 20 levels
+factor_summary_table <- tbl_summary(
+  data = factor_vars,
+  by = "setting",
+  missing = "no",
+  statistic = list(
+    all_categorical() ~ "{n} ({p}%)"
+  )
+) %>%
+  add_p() %>%
+  bold_labels() %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_caption("**Table 2: Descriptive Statistics for Factor Variables with ≤ 20 Levels by Setting**") %>%
+  modify_footnote(
+    all_stat_cols() ~ "N (%) for categorical variables"
+  )
+
+# Convert the gtsummary table to a data frame
+factor_summary_table_df <- as_tibble(factor_summary_table, col_labels = TRUE)
+
+# Rename columns to match expected names
+colnames(factor_summary_table_df) <- c("Variable", "C", "R", "p_value")
+
+# Render the table using DT with enhanced aesthetics
+datatable(
+  factor_summary_table_df,
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = list(
+      'copy', 'csv', 'excel', 'pdf', 'print'
+    ),
+    pageLength = 10,
+    autoWidth = TRUE,
+    columnDefs = list(
+      list(width = '150px', targets = 0),
+      list(className = 'dt-center', targets = '_all')
+    ),
+    stripeClasses = c('stripe1', 'stripe2')
+  ),
+  class = 'cell-border stripe hover'
+) %>% formatStyle(
+  'p_value', target = 'row',
+  backgroundColor = styleInterval(0.05, c('white', 'yellow')),
+  fontWeight = styleInterval(0.05, c('normal', 'bold'))
+) %>% formatStyle(
+  columns = c('Variable', 'C', 'R', 'p_value'),
+  fontSize = '12px',
+  fontFamily = 'Arial'
+) %>% formatStyle(
+  'Variable',
+  whiteSpace = 'nowrap',
+  overflow = 'hidden',
+  textOverflow = 'ellipsis',
+  maxWidth = '200px'
+)
+
+# Save the DT output as an HTML file
+saveWidget(
+  datatable(
+    factor_summary_table_df,
+    extensions = 'Buttons',
+    options = list(
+      dom = 'Bfrtip',
+      buttons = list(
+        'copy', 'csv', 'excel', 'pdf', 'print'
+      ),
+      pageLength = 10,
+      autoWidth = TRUE,
+      columnDefs = list(
+        list(width = '150px', targets = 0),
+        list(className = 'dt-center', targets = '_all')
+      ),
+      stripeClasses = c('stripe1', 'stripe2')
+    ),
+    class = 'cell-border stripe hover'
+  ) %>% formatStyle(
+    'p_value', target = 'row',
+    backgroundColor = styleInterval(0.05, c('white', 'yellow')),
+    fontWeight = styleInterval(0.05, c('normal', 'bold'))
+  ) %>% formatStyle(
+    columns = c('Variable', 'C', 'R', 'p_value'),
+    fontSize = '12px',
+    fontFamily = 'Arial'
+  ) %>% formatStyle(
+    'Variable',
+    whiteSpace = 'nowrap',
+    overflow = 'hidden',
+    textOverflow = 'ellipsis',
+    maxWidth = '200px'
+  ),
+  "factor_summary_table.html"
+)
+
+
+```
+
+## JUST RETESTING (Table 3: Categorical Outcomes by Setting)
+```{r}
+#| echo: false
+#| warning: false
+
+# Function to clean up factor levels
+clean_levels <- function(factor_var) {
+  levels(factor_var) <- levels(factor_var) %>%
+    str_replace_all("[^[:alnum:]]+", "_") %>%
+    str_trim() %>%
+    str_to_title() %>%
+    str_replace_all("_+", "_") %>%
+    str_replace_all("_$", "") %>%
+    str_sub(1, 30)  # Optional: shorten levels to 30 characters max
+  return(factor_var)
+}
+
+# Apply the function to clean up levels of all factor variables
+cleaned_factors <- factor_vars %>%
+  mutate(across(where(is.factor), clean_levels))
+
+# Add the 'setting' variable back to the cleaned factor data frame
+cleaned_factors <- cleaned_factors %>%
+  mutate(setting = merged_clean$setting)
+
+# Ensure that the 'setting' variable is a factor
+cleaned_factors$setting <- as.factor(cleaned_factors$setting)
+
+# Create a summary table for cleaned factor variables with <= 20 levels
+factor_summary_table <- tbl_summary(
+  data = cleaned_factors,
+  by = "setting",
+  missing = "no",
+  statistic = list(
+    all_categorical() ~ "{n} ({p}%)"
+  )
+) %>%
+  add_p() %>%
+  bold_labels() %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_caption("**Table 2: Descriptive Statistics for Factor Variables with ≤ 20 Levels by Setting**") %>%
+  modify_footnote(
+    all_stat_cols() ~ "N (%) for categorical variables"
+  )
+
+# Convert the gtsummary table to a data frame
+factor_summary_table_df <- as_tibble(factor_summary_table, col_labels = TRUE)
+
+# Rename columns to match expected names
+colnames(factor_summary_table_df) <- c("Variable", "C", "R", "p_value")
+
+# Render the table using DT with enhanced aesthetics
+datatable(
+  factor_summary_table_df,
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = list(
+      'copy', 'csv', 'excel', 'pdf', 'print'
+    ),
+    pageLength = 10,
+    autoWidth = TRUE,
+    columnDefs = list(
+      list(width = '300px', targets = 0),  # Set a fixed width for the first column
+      list(className = 'dt-center', targets = '_all')
+    ),
+    stripeClasses = c('stripe1', 'stripe2')
+  ),
+  class = 'cell-border stripe hover'
+) %>% formatStyle(
+  'p_value', target = 'row',
+  backgroundColor = styleInterval(0.05, c('white', 'yellow')),
+  fontWeight = styleInterval(0.05, c('normal', 'bold'))
+) %>% formatStyle(
+  columns = c('Variable', 'C', 'R', 'p_value'),
+  fontSize = '12px',
+  fontFamily = 'Arial'
+) %>% formatStyle(
+  'Variable',
+  whiteSpace = 'normal',
+  wordWrap = 'break-word'
+)
+
+# Save the DT output as an HTML file
+saveWidget(
+  datatable(
+    factor_summary_table_df,
+    extensions = 'Buttons',
+    options = list(
+      dom = 'Bfrtip',
+      buttons = list(
+        'copy', 'csv', 'excel', 'pdf', 'print'
+      ),
+      pageLength = 10,
+      autoWidth = TRUE,
+      columnDefs = list(
+        list(width = '300px', targets = 0),  # Set a fixed width for the first column
+        list(className = 'dt-center', targets = '_all')
+      ),
+      stripeClasses = c('stripe1', 'stripe2')
+    ),
+    class = 'cell-border stripe hover'
+  ) %>% formatStyle(
+    'p_value', target = 'row',
+    backgroundColor = styleInterval(0.05, c('white', 'yellow')),
+    fontWeight = styleInterval(0.05, c('normal', 'bold'))
+  ) %>% formatStyle(
+    columns = c('Variable', 'C', 'R', 'p_value'),
+    fontSize = '12px',
+    fontFamily = 'Arial'
+  ) %>% formatStyle(
+    'Variable',
+    whiteSpace = 'normal',
+    wordWrap = 'break-word'
+  ),
+  "factor_summary_table.html"
+)
+
+
+```
 
 
  
