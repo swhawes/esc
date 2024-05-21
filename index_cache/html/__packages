@@ -14,3 +14,7 @@ kableExtra
 psych
 gtsummary
 gt
+scales
+janitor
+DT
+dlookr

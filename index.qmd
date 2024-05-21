@@ -2,6 +2,13 @@
 title: "ESC-PA_JCMS"
 ---
 
+---
+title: "scratch"
+format: html
+editor: visual
+---
+
+
 ```{r}
 #| echo: false
 #| warning: false
@@ -17,263 +24,315 @@ library(tidyr)
 library(gtsummary)
 library(purrr)
 library(gt)
+library(scales)
+library(janitor)
+library(DT)
+library(dlookr)
 
 # Read the data from an Excel file
 merged <- read_excel("/Users/shawes/PA_JCMS/data/Merged_Files_NoRecid.xlsx")
 
-merged <- merged %>%
-  rename(
-    service_name_1 = "Service Name",  # Adjust indices as appropriate
-    service_type_1 = "Service Type"
-  )
-
-# Assuming 'df' is your dataframe
-merged <- merged %>%
-  rename_all(~ str_to_lower(str_replace_all(., pattern = " ", replacement = "_")))
-
 ```
 
-```{r}
-#| echo: false
-#| warning: false
-#| output: false
-
-# Calculate missing data percentages
-missing_percentages <- merged %>%
-  summarise(across(everything(), ~ round(mean(is.na(.)) * 100, digits = 2))) %>%
-  pivot_longer(everything(), names_to = "Variable", values_to = "Percent Missing")
-
-# Create a gtsummary table from the missing percentages data frame
-missing_table <- missing_percentages %>%
-  gtsummary::tbl_summary(
-    type = all_continuous() ~ "continuous",
-    statistic = all_continuous() ~ "{mean}",  # This line actually isn't necessary since we're directly displaying the missing percentages
-    digits = all_continuous() ~ 2,
-    label = list(Percent_Missing = "Percent Missing")
-  ) %>%
-  modify_header(label ~ "**Variable**")  # Change header names
-
-html_table <- missing_table %>%
-  as_gt() %>%
-  gt::tab_header(
-    title = "Missing Data Report",
-    subtitle = "This table displays the percentage of missing data for each variable."
-  )
-
-```
-
-
-```{r}
-#| echo: false
-#| warning: false
-#| output: false
-#| results: 'asis'
 ## % Missingness by Variable
-
-print(html_table)
-
-```
-
 ```{r}
 #| echo: false
 #| warning: false
 #| output: false
-#| results: 'asis'
 
 # Calculate the percentage of missing data for each column
 missing_data_percentages <- merged %>%
-  summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%
-  unlist()  # Convert to vector
+    summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%
+    pivot_longer(cols = everything(), names_to = "variable", values_to = "missing_percentage")
 
-# Removing columns with >= 90% missing data directly in a single pipeline
+# Filter out columns with >= 90% missing data
+columns_to_keep <- missing_data_percentages %>%
+    filter(missing_percentage < 90) %>%
+    pull(variable)
+
+# Select the columns to keep
 merged <- merged %>%
-  select(where(~ mean(is.na(.)) < 90))
+    select(all_of(columns_to_keep))
 
-# Set character columns to factors
-merged <- merged %>%
-    mutate(across(where(is.character), as.factor))
-
-# Subset the dataframe to include only 'factor' or 'numeric' columns
-merged <- merged %>%
-    select(where(~ is.factor(.) || is.numeric(.)))
 
 ```
-
 
 ```{r}
 #| echo: false
 #| warning: false
-#| output: false
-#| results: 'asis'
 
-# Step 1: Prepare data
-column_types <- map_chr(merged, class)  # Get the class of each column in 'merged'
-type_data <- tibble(Variable = names(column_types), Type = column_types)
-type_counts <- type_data %>% count(Type, name = "Count")
+# List of sensitive variables to exclude
+sensitive_vars <- c("unique_id", "youth_num_in_cohort", "mhs2_juvenile_id", "dob", "assessment_po")
 
-# Step 2: Create and style a gt table in a single chain
-types_table <- gt(data = type_counts) %>%
-  tab_header(
-    title = "Data Types in DataFrame",
-    subtitle = "A summary of the number of each data type present in the 'merged' DataFrame."
-  ) %>%
-  cols_label(
-    Type = "Data Type",
-    Count = "Number of Columns"
-  ) %>%
-  fmt_number(
-    columns = vars(Count),
-    decimals = 0  # No decimal places for counts
-  ) %>%
-  tab_options(
-    heading.background.color = "gray"
-    #heading.font.weight = "bold",
-    #heading.color = "white"
-  ) %>%
-  data_color(
-    columns = vars(Count),
-    colors = scales::col_numeric(palette = c("lightblue", "blue"), domain = NULL)
-  )
+# Function to clean variable names
+clean_variable_names <- function(merged) {
+    cleaned_names <- merged %>%
+        clean_names() %>%
+        names() %>%
+        str_replace_all("[^[:alnum:]_]", "_") %>%
+        str_replace_all("__+", "_") %>%
+        str_trim() %>%
+        tolower()
 
-```
+    names(merged) <- cleaned_names
+    return(merged)
+}
 
+# Function to calculate means and standard deviations for numeric columns
+calculate_means_sds <- function(merged) {
+    means_sds <- sapply(merged, function(x) {
+        if (is.numeric(x)) {
+            mean_value <- round(mean(x, na.rm = TRUE), 2)
+            sd_value <- round(sd(x, na.rm = TRUE), 2)
+            paste0(mean_value, " (", sd_value, ")")
+        } else {
+            NA
+        }
+    })
+    return(means_sds)
+}
 
-## Counts for Variable Types
-```{r}
-#| echo: false
-#| warning: false
-#| results: 'asis'
+# Function to set variable types based on dlookr diagnostics
+set_variable_types <- function(merged, types) {
+    for (i in 1:nrow(types)) {
+        var <- types$variables[i]
+        type <- types$types[i]
+        if (type == "numeric") {
+            merged[[var]] <- as.numeric(merged[[var]])
+        } else if (type == "factor") {
+            merged[[var]] <- as.factor(merged[[var]])
+        } else if (type == "integer") {
+            merged[[var]] <- as.integer(merged[[var]])
+        } else if (type == "character") {
+            merged[[var]] <- as.character(merged[[var]])
+        }
+        # Add other types as necessary
+    }
+    return(merged)
+}
 
-# Print the table to view it
-print(types_table)
+# Function to convert character variables to factors if they have a limited number of unique values
+convert_char_to_factor <- function(merged) {
+    merged <- merged %>%
+        mutate(across(where(is.character), as.factor))
+    return(merged)
+}
 
-```
+# Function to calculate the mode for factor variables
+calculate_modes <- function(merged) {
+    modes <- sapply(merged, function(x) {
+        if (is.factor(x)) {
+            mode_value <- names(sort(table(x), decreasing = TRUE)[1])
+            mode_count <- max(table(x))
+            mode_percentage <- (mode_count / length(x)) * 100
+            paste0(mode_value, " (", round(mode_percentage, 2), "%)")
+        } else {
+            NA
+        }
+    })
+    return(modes)
+}
 
+# Function to calculate date statistics for POSIXct columns
+calculate_date_statistics <- function(merged) {
+    date_stats <- sapply(merged, function(x) {
+        if (inherits(x, "POSIXct")) {
+            min_date <- format(min(x, na.rm = TRUE), "%Y-%m-%d")
+            max_date <- format(max(x, na.rm = TRUE), "%Y-%m-%d")
+            num_unique_dates <- length(unique(x))
+            median_date <- format(median(x, na.rm = TRUE), "%Y-%m-%d")
+            paste0(min_date, " to ", max_date)
+        } else {
+            NA
+        }
+    })
+    return(date_stats)
+}
 
-```{r}
-#| echo: false
-#| warning: false
-#| results: 'asis'
+# Function to count the number of levels for factor variables
+count_levels <- function(merged) {
+    num_levels <- sapply(merged, function(x) if (is.factor(x)) length(levels(x)) else NA)
+    return(num_levels)
+}
 
-library(dplyr)
-library(tidyr)
+# Function to mask sensitive data, only for existing columns
+mask_sensitive_data <- function(merged, sensitive_vars) {
+    existing_sensitive_vars <- intersect(names(merged), sensitive_vars)
+    if (length(existing_sensitive_vars) > 0) {
+        merged <- merged %>%
+            mutate(across(all_of(existing_sensitive_vars), ~"Masked"))
+    }
+    return(merged)
+}
 
-# Calculate the number of levels for each factor variable
-factor_levels <- merged %>%
-  select(where(is.factor)) %>%
-  summarise(across(everything(), nlevels, .names = "{.col}_levels"))
+# List of sensitive variables to exclude
+sensitive_vars <- c("unique_id", "youth_num_in_cohort", "mhs2_juvenile_id", "dob", "assessment_po")
 
-# Pivot to a long format for better readability
-factor_levels_long <- factor_levels %>%
-  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Number of Levels")
+# Apply the cleaning function to the dataset
+merged_clean <- clean_variable_names(merged)
 
-# Assuming factor_levels_long is already created and contains the necessary data
-levels_table <- gt(data = factor_levels_long) %>%
-  gt::tab_header(
-    title = "Number of Levels in Factor Variables",
-    subtitle = "This table shows the number of levels for each factor variable in the dataset."
-  ) %>%
-  gt::cols_label(
-    Variable = "Factor Variable",
-    `Number of Levels` = "Levels"
-  )
+# Convert character variables to factors
+merged_clean <- convert_char_to_factor(merged_clean)
 
-# Print the gt table to the R console
-print(levels_table)
+# Determine variable types using dlookr
+variable_types <- diagnose(merged_clean) %>%
+    select(variables, types)
 
-```
+# Set variable types based on dlookr diagnostics
+merged_clean <- set_variable_types(merged_clean, variable_types)
 
-# Descriptives Test for Subset I of Variables
-```{r}
-#| echo: false
-#| warning: false
-#| results: 'asis'
+# Mask sensitive data
+merged_clean <- mask_sensitive_data(merged_clean, sensitive_vars)
 
-# Calculate missing percentages for each column of interest
-missing_percentages <- merged %>%
-    select(setting, gender, race, ethnicity, racnicity, age_at_service_start, age_at_first_referral_date) %>%
-    summarise(across(everything(), ~ sum(is.na(.)) / n() * 100, .names = "missing_{.col}"))
+# Create a mapping table of original and cleaned names, excluding sensitive variables
+mapping_table <- tibble(
+    original_name = names(merged),
+    cleaned_name = names(merged_clean)
+) %>%
+    filter(!cleaned_name %in% sensitive_vars)
 
-# Convert to a format suitable for addition to gtsummary table
-missing_percentages <- pivot_longer(missing_percentages, cols = everything(), names_to = "variable", values_to = "missing_percent")
+# Calculate means and standard deviations for numeric columns
+means_sds <- calculate_means_sds(merged_clean)
 
-# Prepare the descriptive statistics table
-descriptives_table <- merged %>%
-    select(setting, gender, race, ethnicity, racnicity, age_at_service_start, age_at_first_referral_date) %>%
-    tbl_summary(
-        by = setting, # Optional: if you want to group by gender
-        missing = "no",
-        # label = list(Setting, ~"Setting"),
-        statistic = list(
-            all_continuous() ~ "{mean} ({sd})",
-            all_categorical() ~ "{p}%"
-        )
+# Calculate modes for factor columns
+modes <- calculate_modes(merged_clean)
+
+# Calculate date statistics for POSIXct columns
+date_statistics <- calculate_date_statistics(merged_clean)
+
+# Count the number of levels for factor variables
+num_levels <- count_levels(merged_clean)
+
+# Combine means, modes, date statistics, and sensitive summaries into separate columns
+mapping_table <- mapping_table %>%
+    mutate(
+        mean_sd = means_sds[!names(means_sds) %in% sensitive_vars],
+        mode = modes[!names(modes) %in% sensitive_vars],
+        date_range = date_statistics[!names(date_statistics) %in% sensitive_vars],
+        num_levels = num_levels[!names(num_levels) %in% sensitive_vars]
     ) %>%
-    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}")
+    left_join(variable_types, by = c("cleaned_name" = "variables"))
 
-# Print the table to see if it works without the modifications
-print(descriptives_table)
+# Ensure all numeric values in the table are rounded to two decimal places
+mapping_table <- mapping_table %>%
+    mutate(across(where(is.numeric), ~ round(., 2)))
+
+# Reorder the columns so that summary_statistic is before original_name
+mapping_table <- mapping_table %>%
+    select(cleaned_name, mean_sd, mode, date_range, num_levels, original_name, types)
+
+# Render the table using DT::datatable with tooltips and better formatting
+datatable(mapping_table,
+    rownames = FALSE,
+    caption = "Summary Statistics Table",
+    extensions = "Buttons",
+    options = list(
+        pageLength = 10,
+        scrollX = TRUE,
+        scrollY = "500px",
+        dom = "Bfrtip",
+        buttons = c("copy", "csv", "excel", "pdf", "print")
+    )
+) %>%
+    formatStyle(
+        columns = names(mapping_table),
+        valueColumns = "types",
+        backgroundColor = styleEqual(c("numeric", "factor", "POSIXct"), c("lightblue", "lightgreen", "lightpink"))
+    )
+
 
 ```
 
-# Descriptives Test for Subset II of Variables
-```{r}
+<!-- ```{r}
 #| echo: false
 #| warning: false
-#| output: false
-#| results: 'asis'
+#| execution: false
 
-# Specify the variables to include
-variables_to_include <- c("setting", "service_type", 
-                          "target_dosage", "target_duration", 
-                          "number_of_youth:_\r\nscoring_low_on_the_yls",
-                          "service_classification", "name_brand_service", 
-                          "total_pts._risk_level", "total_pts._amount_of_service", 
-                          "target_weeks", "target_hours")
+# Split the data based on the levels of the 'setting' variable
+data_C <- merged_clean %>% filter(setting == "C")
+data_R <- merged_clean %>% filter(setting == "R")
 
-# Filter the merged dataframe to include only the specified variables, along with 'Setting' if it's a grouping variable
-descriptive_data <- merged %>%
-  select(setting, all_of(variables_to_include))
+# Function to perform t-tests for continuous variables
+perform_t_tests <- function(data) {
+    continuous_vars <- data %>%
+        select_if(is.numeric) %>%
+        names()
+    t_test_results <- lapply(continuous_vars, function(var) {
+        t.test(data[[var]] ~ data$setting)
+    })
+    names(t_test_results) <- continuous_vars
+    return(t_test_results)
+}
 
-```
+# Function to perform chi-square tests for categorical variables
+perform_chi_square_tests <- function(data) {
+    categorical_vars <- data %>%
+        select_if(is.factor) %>%
+        names()
+    chi_square_results <- lapply(categorical_vars, function(var) {
+        table_var <- table(data[[var]], data$setting)
+        chisq.test(table_var)
+    })
+    names(chi_square_results) <- categorical_vars
+    return(chi_square_results)
+}
 
-```{r}
-#| echo: false
-#| warning: false
-#| output: false
-#| results: 'asis'
+# Perform t-tests for continuous variables
+t_test_results <- perform_t_tests(merged_clean)
+# print("T-test Results for Continuous Variables")
+# t_test_results
 
-# Generate descriptive statistics table
-# Prepare the descriptive statistics table
-descriptives_table <- descriptive_data %>%
-    select("setting", "service_type", 
-                          "target_dosage", "target_duration", 
-                          "number_of_youth:_\r\nscoring_low_on_the_yls",
-                          "service_classification", "name_brand_service", 
-                          "total_pts._risk_level", "total_pts._amount_of_service", 
-                          "target_weeks", "target_hours") %>%
-    tbl_summary(
-        by = setting, # Optional: if you want to group by gender
-        missing = "no",
-        # label = list(Setting, ~"Setting"),
-        statistic = list(
-            all_continuous() ~ "{mean} ({sd})",
-            all_categorical() ~ "{p}%"
-        )
-    ) %>%
-    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}")
+# Perform chi-square tests for categorical variables
+chi_square_results <- perform_chi_square_tests(merged_clean)
+# print("Chi-square Test Results for Categorical Variables")
+# chi_square_results
 
-```
+# Create a summary table for both settings
+summary_table <- tbl_summary(
+    data = merged,
+    by = setting,
+    missing = "no",
+    statistic = list(
+        all_continuous() ~ "{mean} ({sd})",
+        all_categorical() ~ "{n} ({p}%)"
+    )
+) %>%
+    add_p() %>%
+    bold_labels() %>%
+    modify_header(label ~ "**Variable**") %>%
+    modify_caption("**Table 1: Descriptive Statistics by Setting**") %>%
+    modify_footnote(
+        all_stat_cols() ~ "Mean (SD) for continuous variables, N (%) for categorical variables"
+    )
 
-```{r}
-#| echo: false
-#| warning: false
-#| results: 'asis'
+# Convert the gtsummary table to a data frame
+summary_table_df <- as_tibble(summary_table, col_labels = TRUE)
 
-# Print the table
-print(descriptives_table)
+# Render the table using DT
+datatable(
+    summary_table_df,
+    extensions = "Buttons",
+    options = list(
+        dom = "Bfrtip",
+        buttons = c("copy", "csv", "excel", "pdf", "print"),
+        pageLength = 5,
+        autoWidth = TRUE,
+        columnDefs = list(list(width = "200px", targets = 1))
+    )
+) %>% formatStyle(
+    "**p-value**",
+    target = "row",
+    backgroundColor = styleInterval(0.05, c("white", "yellow"))
+)
 
-```
+# Print summary table with p-values
+# print(summary_table)
+
+# Save summary table to an HTML file
+# gtsave(summary_table, "summary_table.html")
+
+``` -->
+
 
 
 
