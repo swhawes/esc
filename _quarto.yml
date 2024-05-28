@@ -58,7 +58,7 @@ format:
     link-external-icon: true
     link-external-newwindow: true
     code-copy: true
-    code-fold: show
+    code-fold: true
     code-summary: "Code"
     code-overflow: scroll
     code-line-numbers: TRUE
@@ -77,7 +77,7 @@ execute:
   warning: false
   error: false
   cache: true
-  cold-folding: show
+  cold-folding: true
   R.options: list(width=220)
   fig.align: "center"
   out.width: "75%"
@@ -85,4 +85,4 @@ execute:
   dev: "cairo_pdf"
   freeze: auto # re-render only when source changes
 
-
+#bibliography: manuscript/references.bib
