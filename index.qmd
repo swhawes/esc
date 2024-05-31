@@ -654,24 +654,29 @@ contingency_df <- contingency_df %>%
 
 ::: blue
 
-> **This table shows xxxxx**
-
+> **This table shows descriptives by cohort for YLS scores**
 
 ```{r}
 #| echo: true
 #| warning: false
 
-# Step x: Create and format the table using kable and kableExtra
+# Step 2.3: Create and format the table using kable and kableExtra with enhancements
 formatted_table <- contingency_df %>%
-  kable("html", col.names = c("Index", "Cohort", "Count", "Mean(SD)", "High", "Low", "Moderate", "Very High")) %>%
-  kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+  kable("html", col.names = c("Index", "Cohort", "Count", "Mean(SD)", "High", "Low", "Moderate", "Very High"), caption = "Cohort YLS Table") %>%
+  kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4CAF50") %>%  # Header row styling
+  row_spec(1:nrow(contingency_df), background = c("#f2f2f2", "white")) %>%  # Alternating row colors
+  column_spec(1, bold = TRUE, color = "blue") %>%  # Highlight the Index column
+  column_spec(3, background = "#ffebcc") %>%  # Highlight the Count column
+  add_header_above(c("Cohort Information" = 3, "YLS Total" = 1, "YLS Risk Levels" = 4)) %>%  # Multi-level header
+  footnote(general = "This table provides xxxxx.")  # Add a footnote
 
-# Save the formatted table as HTML
-#save_kable(formatted_table, file = "cohort_risk_table.html")
-
+# Display the formatted table
 formatted_table
 
 ```
+
+
 
 :::
 
@@ -679,7 +684,7 @@ formatted_table
 
 ::: blue
 
-> **This table shows xxxxx**
+> **This table shows the correlation between cohort size and YLS scores**
 
 
 ```{r}
@@ -716,27 +721,5 @@ cat("P-value:", p_value, "\n")
 
 :::
 :::
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
 
 
