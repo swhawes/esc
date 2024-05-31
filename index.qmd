@@ -95,7 +95,8 @@ merged <- merged %>%
 ## Prep data
 
 # List of sensitive variables to exclude
-sensitive_vars <- c("unique_id", "youth_num_in_cohort", "mhs2_juvenile_id", "dob", "assessment_po")
+sensitive_vars <- c("mhs2_juvenile_id", "dob", "assessment_po")
+## "unique_id", "youth_num_in_cohort"
 
 # Function to clean variable names
 clean_variable_names <- function(merged) {
@@ -142,7 +143,7 @@ set_variable_types <- function(merged, types) {
   return(merged)
 }
 
-# Function to convert character variables to factors if they have a limited number of unique values
+# Function to convert character variables to factors
 convert_char_to_factor <- function(merged) {
   merged <- merged %>%
     mutate(across(where(is.character), as.factor))
@@ -188,15 +189,11 @@ mask_sensitive_data <- function(merged, sensitive_vars) {
   return(merged)
 }
 
-# List of sensitive variables to exclude
-sensitive_vars <- c("youth_num_in_cohort", "mhs2_juvenile_id", "dob", "assessment_po")
-# "unique_id" 
-
 # Apply the cleaning function to the dataset
 merged_clean <- clean_variable_names(merged)
 
 # Convert character variables to factors
-merged_clean <- convert_char_to_factor(merged_clean)
+#merged_clean <- convert_char_to_factor(merged_clean)
 
 # Determine variable types using dlookr
 variable_types <- diagnose(merged_clean) %>%
