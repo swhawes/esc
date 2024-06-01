@@ -1,127 +1,39 @@
-
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ```{r}
-#| echo: true
-#| warning: false
-#| output: false
-
-# Extract the first 5 characters to identify the cohort
-cohort_identifiers <- substr(merged$YOUTH_NUM_IN_COHORT, 1, 5)
-# Convert the cohort identifiers to a factor
-cohort_identifiers <- as.factor(cohort_identifiers)
-# Determine the number of unique cohorts
-num_cohorts <- nlevels(cohort_identifiers)
-
-# Count the number of participants in each cohort
-participants_per_cohort <- table(cohort_identifiers)
-
-# Convert the result to a data frame for better readability (optional)
-participants_per_cohort_df <- as.data.frame(participants_per_cohort)
-colnames(participants_per_cohort_df) <- c("Cohort", "Number_of_Participants")
-
-#########
-
-# Extract the first 5 characters to identify the cohort and create a new variable
-merged$Cohort <- substr(merged$YOUTH_NUM_IN_COHORT, 1, 5)
-
-# Convert the new variable to an unordered factor
-merged$Cohort <- as.factor(merged$Cohort)
-
-# Verify the new variable
-str(merged$Cohort)
-
-# Convert the new variable to an unordered factor
-merged$Total_Risk_Desc <- as.factor(merged$Total_Risk_Desc)
-
-# Step 1: Create a contingency table
-contingency_table <- table(merged$Cohort, merged$Total_Risk_Desc)
-#print(contingency_table)
 
 # Step 2: Convert the contingency table to a data frame
-contingency_df <- as.data.frame.matrix(contingency_table)
+contingency_df_serviceType <- as.data.frame.matrix(contingency_table_serviceType)
 
 # Step 3: Add a new column with the total count of individuals in each cohort
-contingency_df$Total <- rowSums(contingency_df)
+contingency_df_serviceType$Total <- rowSums(contingency_df_serviceType)
 
 # Step 4: Rename the 'Total' column to 'Count'
-contingency_df <- contingency_df %>%
+contingency_df_serviceType <- contingency_df_serviceType %>%
   rownames_to_column(var = "Cohort") %>%
   rename(Count = Total)
 
 # Step 5: Calculate proportions for each risk category and format them as percentages
-contingency_df <- contingency_df %>%
-  mutate(across(c(High, Low, Moderate, `Very High`), ~ sprintf("%d (%d%%)", ., round(./Count * 100))))
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  mutate(across(contains(" "), ~ sprintf("%d (%d%%)", ., round(./Count * 100))))
 
-# Step 6: Calculate mean and standard deviation for the totalscore variable for each cohort
-mean_sd <- merged %>%
-  group_by(Cohort) %>%
-  summarize(mean_sd = sprintf("%.2f (%.2f)", mean(TOTALSCORE, na.rm = TRUE), sd(TOTALSCORE, na.rm = TRUE)))
 
-# Step 7: Merge the mean(sd) statistics with the contingency table
-contingency_df <- left_join(contingency_df, mean_sd, by = "Cohort")
+
 
 # Step 8: Reorder columns so 'Count' is the second column
-contingency_df <- contingency_df %>%
-  select(Cohort, Count, mean_sd, everything())
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  select(Cohort, Count, everything())
 
 # Step 9: Sort the data frame in descending order based on 'Count'
-contingency_df <- contingency_df %>%
+contingency_df_serviceType <- contingency_df_serviceType %>%
   arrange(desc(Count))
 
+# Step x: Add an index column
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  mutate(Index = row_number())
+
+# Step x: Reorder the columns to have the index as the first column
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  select(Index, everything())
 
 ```
-
-```{r}
-#| echo: true
-#| warning: false
-
-# Print the number of cohorts
-print(num_cohorts)
-
-# Print the data frame
-print(participants_per_cohort_df)
-
-# Step 10: Create and format the table using kable and kableExtra
-formatted_table <- contingency_df %>%
-  kable("html", col.names = c("Cohort", "Count", "Mean(SD)", "High", "Low", "Moderate", "Very High")) %>%
-  kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive"))
-
-# Save the formatted table as HTML
-#save_kable(formatted_table, file = "cohort_risk_table.html")
-
-formatted_table
-
-```
-
-```{r}
-#| echo: true
-#| warning: false
-
-# Calculate the total count for each cohort
-count_df <- merged %>%
-  group_by(Cohort) %>%
-  summarize(Count = n())
-
-# Calculate the mean totalscore for each cohort
-mean_totalscore_df <- merged %>%
-  group_by(Cohort) %>%
-  summarize(TOTALSCORE = mean(TOTALSCORE, na.rm = TRUE))
-
-# Merge the count and mean totalscore data frames
-merged_df <- left_join(count_df, mean_totalscore_df, by = "Cohort")
-
-# Perform a correlation test between Count and Mean_TOTALSCORE
-correlation_test <- cor.test(merged_df$Count, merged_df$TOTALSCORE, use = "complete.obs")
-
-# Extract the sample size, correlation coefficient, and p-value
-sample_size <- length(na.omit(merged_df$Count))
-correlation_coefficient <- correlation_test$estimate
-p_value <- correlation_test$p.value
-
-# Print the results
-cat("Sample Size:", sample_size, "\n")
-cat("Correlation Coefficient:", correlation_coefficient, "\n")
-cat("P-value:", p_value, "\n")
-
-```
-
