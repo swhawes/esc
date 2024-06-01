@@ -8,10 +8,15 @@ project:
 website:
   title: "ESC"
   #favicon: "./img/lights.png"
-  #twitter-card: true
-  #site-url: https://opendevsci.github.io/LongDev-ABCD/
+  site-url: https://swhawes.github.io/esc/
   page-navigation: true
   open-graph: true
+  comments: 
+    hypothesis:
+      theme: clean
+      openSidebar: true
+      showHighlights: whenSidebarOpen
+      enableExperimentalNewNoteButton: true
   navbar:
     background: darkblue #slategray #primary #goldenrod
     search: true
