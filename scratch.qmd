@@ -1,39 +1,71 @@
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
 
 ```{r}
 
+column_names <- names(merged)
+print(column_names)
+
+## res[186] "Points Received: \r\nAmount of Service - Duration" 
+
+# Assuming you find the exact column name as "Points Received: \nAmount of Service - Duration"
+exact_column_name <- "Points Received: \r\nAmount of Service - Duration"
+
+# Create a new column 'duration' that is a copy of the original column
+merged$duration <- merged[[exact_column_name]]
+
+# Ensure 'duration' column is factors
+merged$duration <- as.factor(merged$duration)
+
+# Verify the new column
+str(merged$duration)
+
+```
+
+
+``{r}
+# Ensure 'duration' column is factors
+merged$duration <- as.factor(merged$duration)
+
+# Verify the structures
+str(merged$duration)
+
+# Step 1: Create contingency table for 'duration' by 'Cohort'
+contingency_table_duration <- table(merged$Cohort, merged$duration)
+
 # Step 2: Convert the contingency table to a data frame
-contingency_df_serviceType <- as.data.frame.matrix(contingency_table_serviceType)
+contingency_df_duration <- as.data.frame.matrix(contingency_table_duration)
 
 # Step 3: Add a new column with the total count of individuals in each cohort
-contingency_df_serviceType$Total <- rowSums(contingency_df_serviceType)
+contingency_df_duration$Total <- rowSums(contingency_df_duration)
 
 # Step 4: Rename the 'Total' column to 'Count'
-contingency_df_serviceType <- contingency_df_serviceType %>%
+contingency_df_duration <- contingency_df_duration %>%
   rownames_to_column(var = "Cohort") %>%
   rename(Count = Total)
 
-# Step 5: Calculate proportions for each risk category and format them as percentages
-contingency_df_serviceType <- contingency_df_serviceType %>%
-  mutate(across(contains(" "), ~ sprintf("%d (%d%%)", ., round(./Count * 100))))
-
-
-
-
-# Step 8: Reorder columns so 'Count' is the second column
-contingency_df_serviceType <- contingency_df_serviceType %>%
-  select(Cohort, Count, everything())
-
-# Step 9: Sort the data frame in descending order based on 'Count'
-contingency_df_serviceType <- contingency_df_serviceType %>%
-  arrange(desc(Count))
-
-# Step x: Add an index column
-contingency_df_serviceType <- contingency_df_serviceType %>%
+# Step 5: Add an index column
+contingency_df_duration <- contingency_df_duration %>%
   mutate(Index = row_number())
 
-# Step x: Reorder the columns to have the index as the first column
-contingency_df_serviceType <- contingency_df_serviceType %>%
-  select(Index, everything())
+# Step 6: Reorder the columns to have the index as the first column
+contingency_df_duration <- contingency_df_duration %>%
+  select(Index, Cohort, Count, everything())
+
+# Step 7: Create and format the table using kable and kableExtra with enhancements
+formatted_table_duration <- contingency_df_duration %>%
+  kable("html", col.names = names(contingency_df_duration), caption = "Cohort Duration Table") %>%
+  kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4CAF50") %>%
+  row_spec(1:nrow(contingency_df_duration), background = c("#f2f2f2", "white")) %>%
+  column_spec(1, bold = TRUE, color = "blue") %>%
+  column_spec(3, background = "#ffebcc") %>%
+  add_header_above(c("Cohort Information" = 3, "Durations" = ncol(contingency_df_duration) - 3)) %>%
+  footnote(general = "This table provides a breakdown of cohorts by Duration.")
+
+# Display the formatted table for Duration
+formatted_table_duration
 
 ```
+

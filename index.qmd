@@ -869,3 +869,128 @@ formatted_table_serviceType
 :::
 
 
+## Cohort Settings & Duration Descriptives
+
+::: panel-tabset
+
+### Cohort Settings Table
+
+::: blue
+> **This table shows descriptives by cohort for different settings (C/R)**
+
+```{r}
+
+# Ensure 'Setting' and 'duration' columns are factors
+merged$Setting <- as.factor(merged$Setting)
+
+# Verify the structures
+#str(merged$Setting)
+
+# Step 1: Create contingency table for 'Setting' by 'Cohort'
+contingency_table_setting <- table(merged$Cohort, merged$Setting)
+
+# Step 2: Convert the contingency table to a data frame
+contingency_df_setting <- as.data.frame.matrix(contingency_table_setting)
+
+# Step 3: Add a new column with the total count of individuals in each cohort
+contingency_df_setting$Total <- rowSums(contingency_df_setting)
+
+# Step 4: Rename the 'Total' column to 'Count'
+contingency_df_setting <- contingency_df_setting %>%
+  rownames_to_column(var = "Cohort") %>%
+  rename(Count = Total)
+
+# Step 5: Add an index column
+contingency_df_setting <- contingency_df_setting %>%
+  mutate(Index = row_number())
+
+# Step 6: Reorder the columns to have the index as the first column
+contingency_df_setting <- contingency_df_setting %>%
+  select(Index, Cohort, Count, everything())
+
+# Step 7: Create and format the table using kable and kableExtra with enhancements
+formatted_table_setting <- contingency_df_setting %>%
+  kable("html", col.names = names(contingency_df_setting), caption = "Cohort Setting Table") %>%
+  kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4CAF50") %>%
+  row_spec(1:nrow(contingency_df_setting), background = c("#f2f2f2", "white")) %>%
+  column_spec(1, bold = TRUE, color = "blue") %>%
+  column_spec(3, background = "#ffebcc") %>%
+  add_header_above(c("Cohort Information" = 3, "Settings" = ncol(contingency_df_setting) - 3)) %>%
+  footnote(general = "This table provides a breakdown of cohorts by Setting.")
+
+# Display the formatted table for Setting
+formatted_table_setting
+
+```
+
+:::
+
+### Cohort Duration Table
+
+::: blue
+> **This table shows descriptives by cohort for different durations**
+
+
+```{r}
+#column_names <- names(merged)
+#print(column_names)
+
+# Assuming you find the exact column name as "Points Received: \nAmount of Service - Duration"
+exact_column_name <- "Points Received: \r\nAmount of Service - Duration"
+
+# Create a new column 'duration' that is a copy of the original column
+merged$duration <- merged[[exact_column_name]]
+
+# Ensure 'duration' column is factors
+merged$duration <- as.factor(merged$duration)
+
+# Verify the new column
+#str(merged$duration)
+
+# Step 1: Create contingency table for 'duration' by 'Cohort'
+contingency_table_duration <- table(merged$Cohort, merged$duration)
+
+# Step 2: Convert the contingency table to a data frame
+contingency_df_duration <- as.data.frame.matrix(contingency_table_duration)
+
+# Step 3: Add a new column with the total count of individuals in each cohort
+contingency_df_duration$Total <- rowSums(contingency_df_duration)
+
+# Step 4: Rename the 'Total' column to 'Count'
+contingency_df_duration <- contingency_df_duration %>%
+  rownames_to_column(var = "Cohort") %>%
+  rename(Count = Total)
+
+# Step 5: Add an index column
+contingency_df_duration <- contingency_df_duration %>%
+  mutate(Index = row_number())
+
+# Step 6: Reorder the columns to have the index as the first column
+contingency_df_duration <- contingency_df_duration %>%
+  select(Index, Cohort, Count, everything())
+
+# Step 7: Create and format the table using kable and kableExtra with enhancements
+formatted_table_duration <- contingency_df_duration %>%
+  kable("html", col.names = names(contingency_df_duration), caption = "Cohort Duration Table") %>%
+  kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4CAF50") %>%
+  row_spec(1:nrow(contingency_df_duration), background = c("#f2f2f2", "white")) %>%
+  column_spec(1, bold = TRUE, color = "blue") %>%
+  column_spec(3, background = "#ffebcc") %>%
+  add_header_above(c("Cohort Information" = 3, "Durations" = ncol(contingency_df_duration) - 3)) %>%
+  footnote(general = "This table provides a breakdown of cohorts by Duration.")
+
+# Display the formatted table for Duration
+formatted_table_duration
+
+```
+
+
+
+
+
+:::
+:::
+
+
