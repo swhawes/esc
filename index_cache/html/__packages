@@ -21,3 +21,5 @@ dlookr
 htmlwidgets
 patchwork
 knitr
+htmltools
+plotly
