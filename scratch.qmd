@@ -1,71 +1,669 @@
+---
+title: "SPEP Revalidation"
+---
 
+## Preliminary Setup
 
+::: panel-tabset
 
+### Config Options
+
+::: blue
+> **This code configures knitr code chunk options**
+
+```{r}
+#| echo: true
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+knitr::opts_chunk$set(
+    echo = TRUE, message = FALSE, warning = FALSE, error = FALSE,
+    comment = NA, cache = TRUE, code_folding = TRUE,
+    R.options = list(width = 220, digits = 3),
+    fig.align = "center",
+    out.width = "75%", fig.asp = .75
+)
+
+```
+
+:::
+
+### Install Packages {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+> **This code loads the r packages necessary for this example**
+
+```{r}
+#| echo: true
+#| warning: false
+#| output: false
+
+library(tidyverse)
+library(readxl)
+library(gtsummary)
+library(DT)
+library(patchwork)
+library(dlookr)
+library(kableExtra)
+library(knitr)
+library(openxlsx)
+library(psych)
+library(janitor)
+library(stringr)
+library(tidyr)
+
+```
+
+:::
+
+### Load Data
+> **This code loads the dataframe**
+
+```{r}
+# Define the clean_variable_names function
+clean_variable_names <- function(df) {
+  cleaned_names <- df %>%
+    names() %>%
+    str_replace_all("[^[:alnum:]_]", "_") %>%
+    str_replace_all("__+", "_") %>%
+    str_replace_all("[\r\n\t]", "") %>%
+    str_trim() %>%
+    str_remove("_$") %>%
+    tolower()
+  
+  cleaned_names <- make.unique(cleaned_names, sep = "_")
+  
+  names(df) <- cleaned_names
+  return(df)
+}
+
+# Example usage:
+# Read the CSV file
+merged <- read_csv("/Users/shawes/PA_JCMS/data/Merged_Files_NoRecid.csv", col_types = cols(.default = "c"))
+
+# Clean the column names
+merged_clean <- clean_variable_names(merged)
+
+# Verify the cleaned names
+#print(names(merged_clean))
+
+# Select the specified variables to create the new dataframe
+variables_to_keep <- c(
+  "unique_id", "youth_num_in_cohort", "gender", "race", "ethnicity", "racnicity", 
+  "age_at_service_start", "age_at_first_referral_date", "assessment_type", "total_risk_desc", 
+  "totalscore", "priorscore", "familyscore", "educationscore", "peerscore", "substancescore", 
+  "leisurescore", "personalityscore", "attitudesscore", "spep_id", "time", "total_weeks_of_service", 
+  "total_hours_of_service", "was_there_service_interruption_of_30_days_or_more", 
+  "was_youth_discharged_earlier_than_anticipated", "anticipated_of_youth", "total_of_youth", 
+  "service_type", "target_dosage", "target_duration", "setting", "service_type_1", 
+  "primary_therapeutic_category", "total_of_youth_in_cohort_amount_of_service", 
+  "number_of_youth_scoring_low_on_the_yls", "number_of_youth_scoring_moderate_on_the_yls", 
+  "number_of_youth_scoring_high_on_the_yls", "number_of_youth_scoring_very_high_on_the_yls", 
+  "points_received_primary_service_type", "points_received_supplemental_service_provided", 
+  "points_received_quality_of_service_delivery", "points_received_amount_of_service_duration", 
+  "points_received_amount_of_service_contact_hours", 
+  "points_received_risk_level_of_youth_youth_scoring_above_low_on_the_yls", 
+  "points_received_risk_level_of_youth_youth_scoring_above_moderate_on_the_yls", 
+  "basic_score_total_raw_points_earned", "maximum_total_points_possible_for_service_type_denominator_for_pop_score", 
+  "pop_score_basic_score_divided_by_max_pts_possible_for_service_type", 
+  "quality_measures_received_organizational_response_to_drift", "total_quality_measures_received", 
+  "quality_of_service_delivery", "total_pts_amount_of_service", "total_pts_risk_level", 
+  "basic_score_description_pa_validation_study_2020", "pop_score_description_pa_validation_study_2020", 
+  "target_weeks", "target_hours"
+)
+
+# Create the new dataframe with the specified variables
+merged_clean <- merged_clean %>%
+  select(all_of(variables_to_keep))
+
+# Convert appropriate columns to numeric and factor
+numeric_vars <- c("age_at_service_start", "age_at_first_referral_date", "totalscore", "priorscore",
+                  "familyscore", "educationscore", "peerscore", "substancescore", "leisurescore",
+                  "personalityscore", "attitudesscore", "total_weeks_of_service", "total_hours_of_service",
+                  "anticipated_of_youth", "total_of_youth", "target_dosage", "target_duration",
+                  "total_of_youth_in_cohort_amount_of_service", "number_of_youth_scoring_low_on_the_yls",
+                  "number_of_youth_scoring_moderate_on_the_yls", "number_of_youth_scoring_high_on_the_yls",
+                  "number_of_youth_scoring_very_high_on_the_yls", "points_received_primary_service_type",
+                  "points_received_supplemental_service_provided", "points_received_quality_of_service_delivery",
+                  "points_received_amount_of_service_duration", "points_received_amount_of_service_contact_hours",
+                  "points_received_risk_level_of_youth_youth_scoring_above_low_on_the_yls",
+                  "points_received_risk_level_of_youth_youth_scoring_above_moderate_on_the_yls",
+                  "basic_score_total_raw_points_earned", "maximum_total_points_possible_for_service_type_denominator_for_pop_score",
+                  "pop_score_basic_score_divided_by_max_pts_possible_for_service_type",
+                  "quality_measures_received_organizational_response_to_drift", "total_quality_measures_received",
+                  "total_pts_amount_of_service", "total_pts_risk_level", "target_weeks", "target_hours")
+
+factor_vars <- c("unique_id", "youth_num_in_cohort", "gender", "race", "ethnicity", "racnicity",
+                 "assessment_type", "total_risk_desc", "spep_id", "time", "was_there_service_interruption_of_30_days_or_more",
+                 "was_youth_discharged_earlier_than_anticipated", "service_type", "setting", "service_type_1",
+                 "primary_therapeutic_category", "quality_of_service_delivery", "basic_score_description_pa_validation_study_2020",
+                 "pop_score_description_pa_validation_study_2020")
+
+ordered_factor_vars <- c("total_risk_desc", "time", "quality_of_service_delivery", 
+                         "basic_score_description_pa_validation_study_2020", "pop_score_description_pa_validation_study_2020")
+
+merged_clean <- merged_clean %>%
+  mutate(across(all_of(numeric_vars), as.numeric)) %>%
+  mutate(across(all_of(factor_vars), as.factor)) %>%
+  mutate(across(all_of(ordered_factor_vars), ~ factor(.x, ordered = TRUE)))
+
+# Verify the new dataframe
+#str(merged_clean)
+
+```
 
 ```{r}
 
-column_names <- names(merged)
-print(column_names)
+#| echo: true
+#| warning: false
+#| output: true
 
-## res[186] "Points Received: \r\nAmount of Service - Duration" 
+# Split the data into numeric and factor columns
+numeric_cols <- merged_clean %>% select(where(is.numeric))
+unordered_factor_cols <- merged_clean %>% select(where(is.factor) & !where(is.ordered))
+ordered_factor_cols <- merged_clean %>% select(where(is.ordered))
 
-# Assuming you find the exact column name as "Points Received: \nAmount of Service - Duration"
-exact_column_name <- "Points Received: \r\nAmount of Service - Duration"
+# Pivot and calculate summary statistics for numeric columns
+numeric_summary <- numeric_cols %>%
+  pivot_longer(cols = everything(), names_to = "variable") %>%
+  group_by(variable) %>%
+  summarise(
+    missing = sum(is.na(value)),
+    categories = n_distinct(value),
+    count = NA,
+    mean = mean(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE),
+    min = min(value, na.rm = TRUE),
+    max = max(value, na.rm = TRUE)
+  ) %>%
+  mutate(mean_sd = sprintf("%.2f (%.2f)", mean, sd)) %>%
+  select(variable, mean_sd, min, max, count, missing, categories)
 
-# Create a new column 'duration' that is a copy of the original column
-merged$duration <- merged[[exact_column_name]]
+# Pivot and calculate summary statistics for unordered factor columns
+unordered_factor_summary <- unordered_factor_cols %>%
+  pivot_longer(cols = everything(), names_to = "variable") %>%
+  group_by(variable) %>%
+  summarise(
+    missing = sum(is.na(value)),
+    categories = n_distinct(value),
+    count = paste(names(sort(table(value), decreasing = TRUE)[1]), 
+                  "(", round(max(table(value)) / sum(table(value)) * 100, 2), "%)", sep = ""),
+    mean_sd = NA,
+    min = NA,
+    max = NA
+  ) %>%
+  select(variable, mean_sd, min, max, count, missing, categories)
 
-# Ensure 'duration' column is factors
-merged$duration <- as.factor(merged$duration)
+# Pivot and calculate summary statistics for each ordered factor column separately
+ordered_factor_summary <- bind_rows(lapply(names(ordered_factor_cols), function(col_name) {
+  ordered_factor_cols %>%
+    select(!!sym(col_name)) %>%
+    pivot_longer(cols = everything(), names_to = "variable") %>%
+    group_by(variable) %>%
+    summarise(
+      missing = sum(is.na(value)),
+      categories = n_distinct(value),
+      count = paste(names(sort(table(value), decreasing = TRUE)[1]), 
+                    "(", round(max(table(value)) / sum(table(value)) * 100, 2), "%)", sep = ""),
+      mean_sd = NA,
+      min = NA,
+      max = NA
+    ) %>%
+    select(variable, mean_sd, min, max, count, missing, categories)
+}))
 
-# Verify the new column
-str(merged$duration)
+# Combine numeric and factor summaries
+descriptives_tidy <- bind_rows(numeric_summary, unordered_factor_summary, ordered_factor_summary) %>%
+  rename(
+    count = count,
+    missing = missing,
+    categories = categories
+  ) %>%
+  select(variable, mean_sd, min, max, count, missing, categories)
+
+# Exclude specified variables
+descriptives_filtered <- descriptives_tidy %>%
+  filter(!variable %in% c("unique_id", "youth_num_in_cohort", "spep_id"))
+
+
+
+```
+
+:::
+
+## Sample Descriptives
+
+::: panel-tabset
+
+### General Data View {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+> **This table shows some general info for full sample (including duplicates), will probably be removed later**
+
+```{r}
+#| echo: true
+#| warning: false
+#| output: true
+
+# Render the table using DT::datatable with tooltips and better formatting
+datatable(descriptives_filtered, 
+          rownames = FALSE,
+          caption = 'Summary Statistics Table',
+          extensions = 'Buttons',
+          options = list(
+            pageLength = 10,
+            scrollX = TRUE,
+            scrollY = "500px",
+            dom = 'Bfrtip',
+            buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+          )) %>%
+  formatRound(columns = c('min', 'max'), digits = 2) %>%
+  formatStyle(
+    columns = 'mean_sd',
+    target = 'row',
+    backgroundColor = styleInterval(1, c('white', 'lightgreen'))
+  ) %>%
+  formatStyle(
+    columns = names(descriptives_filtered),
+    whiteSpace = 'nowrap'
+  )
+
+
+```
+:::
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
+
+# Extract the first 5 characters to identify the cohort
+cohort_identifiers <- substr(merged$YOUTH_NUM_IN_COHORT, 1, 5)
+# Convert the cohort identifiers to a factor
+cohort_identifiers <- as.factor(cohort_identifiers)
+# Determine the number of unique cohorts
+num_cohorts <- nlevels(cohort_identifiers)
+
+# Count the number of participants in each cohort
+participants_per_cohort <- table(cohort_identifiers)
+
+# Convert the result to a data frame for better readability (optional)
+participants_per_cohort_df <- as.data.frame(participants_per_cohort)
+colnames(participants_per_cohort_df) <- c("Cohort", "Number_of_Participants")
+
+#########
+
+# Extract the first 5 characters to identify the cohort and create a new variable
+merged$Cohort <- substr(merged$YOUTH_NUM_IN_COHORT, 1, 5)
+
+# Convert the new variable to an unordered factor
+merged$Cohort <- as.factor(merged$Cohort)
+
+# Verify the new variable
+#str(merged$Cohort)
+
+# Convert variables to an unordered factors
+merged$Total_Risk_Desc <- as.factor(merged$Total_Risk_Desc)
+
+# Step 1: Create a contingency table
+contingency_table_YLS <- table(merged$Cohort, merged$Total_Risk_Desc)
+#print(contingency_table_YLS)
+
+# Step 2: Convert the contingency table to a data frame
+contingency_df_YLS <- as.data.frame.matrix(contingency_table_YLS)
+
+# Step 3: Add a new column with the total count of individuals in each cohort
+contingency_df_YLS$Total <- rowSums(contingency_df_YLS)
+
+# Step 4: Rename the 'Total' column to 'Count'
+contingency_df_YLS <- contingency_df_YLS %>%
+  rownames_to_column(var = "Cohort") %>%
+  rename(Count = Total)
+
+# Step 5: Calculate proportions for each risk category and format them as percentages
+contingency_df_YLS <- contingency_df_YLS %>%
+  mutate(across(c(High, Low, Moderate, `Very High`), ~ sprintf("%d (%d%%)", ., round(./Count * 100))))
+
+# Step 6: Calculate mean and standard deviation for the totalscore variable for each cohort
+mean_sd <- merged %>%
+  group_by(Cohort) %>%
+  summarize(mean_sd = sprintf("%.2f (%.2f)", mean(TOTALSCORE, na.rm = TRUE), sd(TOTALSCORE, na.rm = TRUE)))
+
+# Step 7: Merge the mean(sd) statistics with the contingency table
+contingency_df_YLS <- left_join(contingency_df_YLS, mean_sd, by = "Cohort")
+
+# Step 8: Reorder columns so 'Count' is the second column
+contingency_df_YLS <- contingency_df_YLS %>%
+  select(Cohort, Count, mean_sd, everything())
+
+# Step 9: Sort the data frame in descending order based on 'Count'
+contingency_df_YLS <- contingency_df_YLS %>%
+  arrange(desc(Count))
+
+# Step x: Add an index column
+contingency_df_YLS <- contingency_df_YLS %>%
+  mutate(Index = row_number())
+
+# Step x: Reorder the columns to have the index as the first column
+contingency_df_YLS <- contingency_df_YLS %>%
+  select(Index, everything())
 
 ```
 
 
-``{r}
-# Ensure 'duration' column is factors
-merged$duration <- as.factor(merged$duration)
+### Cohort YLS Table {.tabset .tabset-fade .tabset-pills}
 
-# Verify the structures
-str(merged$duration)
+::: blue
+> **This table shows descriptives by cohort for YLS scores**
 
-# Step 1: Create contingency table for 'duration' by 'Cohort'
-contingency_table_duration <- table(merged$Cohort, merged$duration)
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
+
+# Create a new variable based on High or Very High endorsement
+contingency_df_YLS <- contingency_df_YLS %>%
+  mutate(
+    High_or_Very_High = ifelse(High > 0 | `Very High` > 0, 1, 0)
+  ) %>%
+  select(-`Very High`)  # Remove the Very High column if no longer needed
+
+# Rename columns appropriately if necessary
+names(contingency_df_YLS) <- c("Index", "Cohort", "Count", "Mean(SD)", "Low", "Moderate", "High", "High_or_Very_High")
+
+# Step 2.3: Create and format the table using kable and kableExtra with enhancements
+YLS_table <- contingency_df_YLS %>%
+  kable("html", col.names = c("Index", "Cohort", "Count", "Mean(SD)", "Low", "Moderate", "High", "High/Very High"), caption = "Cohort YLS Table") %>%
+  kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4CAF50") %>%
+  row_spec(1:nrow(contingency_df_YLS), background = c("#f2f2f2", "white")) %>%
+  column_spec(1, bold = TRUE, color = "blue") %>%
+  column_spec(3, background = "#ffebcc") %>%
+  add_header_above(c("Cohort Information" = 3, "YLS Total" = 1, "YLS Risk Levels" = 4)) %>%
+  footnote(general = "This table provides the YLS risk levels combined with 'High/Very High' indicating if either 'High' or 'Very High' was endorsed.")
+
+
+```
+
+```{r}
+#| echo: true
+#| warning: false
+
+# Display the formatted table
+YLS_table
+
+```
+
+:::
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
+
+# Extract the first 5 characters to identify the cohort
+cohort_identifiers <- substr(merged$YOUTH_NUM_IN_COHORT, 1, 5)
+# Convert the cohort identifiers to a factor
+cohort_identifiers <- as.factor(cohort_identifiers)
+# Determine the number of unique cohorts
+num_cohorts <- nlevels(cohort_identifiers)
+
+# Count the number of participants in each cohort
+participants_per_cohort <- table(cohort_identifiers)
+
+# Convert the result to a data frame for better readability (optional)
+participants_per_cohort_df <- as.data.frame(participants_per_cohort)
+colnames(participants_per_cohort_df) <- c("Cohort", "Number_of_Participants")
+
+#########
+
+# Extract the first 5 characters to identify the cohort and create a new variable
+merged$Cohort <- substr(merged$YOUTH_NUM_IN_COHORT, 1, 5)
+
+# Convert the new variable to an unordered factor
+merged$Cohort <- as.factor(merged$Cohort)
+
+# Verify the new variable
+#str(merged$Cohort)
+
+# Convert variables to an unordered factors
+merged$Service_Type <- as.factor(merged$Service_Type)
+
+# Define a function to clean levels of a factor variable
+clean_factor_levels <- function(Service_Type) {
+  cleaned_levels <- levels(Service_Type) %>%
+    str_replace_all("[^[:alnum:]_]", "_") %>%
+    str_replace_all("__+", "_") %>%
+    str_trim() %>%
+    tolower()
+  levels(Service_Type) <- cleaned_levels
+  return(Service_Type)
+}
+
+# Ensure the 'Service_Type' column in merged data frame is a factor
+merged$Service_Type <- as.factor(merged$Service_Type)
+
+# Clean the levels of the 'Service_Type' factor variable
+merged$Service_Type <- clean_factor_levels(merged$Service_Type)
+
+# Verify the cleaned levels
+print(levels(merged$Service_Type))
+
+# Step 1: Create a contingency table
+contingency_table_serviceType <- table(merged$Cohort, merged$Service_Type)
+#print(contingency_table_serviceType)
 
 # Step 2: Convert the contingency table to a data frame
-contingency_df_duration <- as.data.frame.matrix(contingency_table_duration)
+contingency_df_serviceType <- as.data.frame.matrix(contingency_table_serviceType)
 
 # Step 3: Add a new column with the total count of individuals in each cohort
-contingency_df_duration$Total <- rowSums(contingency_df_duration)
+contingency_df_serviceType$Total <- rowSums(contingency_df_serviceType)
 
 # Step 4: Rename the 'Total' column to 'Count'
-contingency_df_duration <- contingency_df_duration %>%
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  rownames_to_column(var = "Cohort") %>%
+  rename(Count = Total)
+
+# Step 5: Calculate proportions for each risk category and format them as percentages
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  mutate(across(contains(" "), ~ sprintf("%d (%d%%)", ., round(./Count * 100))))
+
+# Add a new column with the sum of the service type columns for each individual
+service_type_columns <- colnames(contingency_df_serviceType)[3:ncol(contingency_df_serviceType)]
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  mutate(Service_Type_Sum = rowSums(across(all_of(service_type_columns), ~ as.numeric(gsub(" .*", "", .)))))
+
+# Step 8: Reorder columns so 'Count' is the second column
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  select(Cohort, Count, Service_Type_Sum, everything())
+
+# Step 9: Sort the data frame in descending order based on 'Count'
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  arrange(desc(Count))
+
+# Step x: Add an index column
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  mutate(Index = row_number())
+
+# Step x: Reorder the columns to have the index as the first column
+contingency_df_serviceType <- contingency_df_serviceType %>%
+  select(Index, everything())
+
+```
+
+### Cohort Service Type Table {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+> **This table shows descriptives by cohort for different service types**
+
+```{r}
+#| echo: true
+#| warning: false
+
+# Create and format the table using kable and kableExtra with enhancements
+formatted_table_serviceType <- contingency_df_serviceType %>%
+  kable("html", col.names = c("Index", "Cohort", "Count", "Serv_Type_Sum", "ART_Comm_Based", "ART_Res_Prog", "Behav_Manag", "Chall_Progs", "CBT", "Fam_Couns", "Grp_Couns", "Indiv_Couns", "Job_Train", "Voc_Couns", "Mentoring", "Mix_Couns", "MST", "Rem_Acad_Prog", "Rest_Comm_Serv", "Soc_Skills_Train"), caption = "Cohort Service Type Table") %>%
+  kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4CAF50") %>%
+  row_spec(1:nrow(contingency_df_serviceType), background = c("#f2f2f2", "white")) %>%
+  column_spec(1, bold = TRUE, color = "blue") %>%
+  column_spec(3, background = "#ffebcc") %>%
+  add_header_above(c("Cohort Information" = 4, "YLS Service Types" = 16)) %>%
+  footnote(general = "This table provides xxxxx.") %>%
+  kable_styling(latex_options = "scale_down") %>%
+  column_spec(1:4, bold = TRUE, border_right = TRUE, width = "1.5cm") %>%
+  column_spec(5:20, width = "2cm")
+
+# Display the formatted table
+formatted_table_serviceType
+
+```
+
+:::
+:::
+
+## Additional Output and Tables
+
+::: panel-tabset
+
+### Settings Table
+
+::: blue
+> **This table shows descriptives by cohort for different settings**
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false
+
+# Ensure 'Setting' and 'duration' columns are factors
+merged$Setting <- as.factor(merged$Setting)
+
+# Verify the structures
+#str(merged$Setting)
+
+# Step 1: Create contingency table for 'Setting' by 'Cohort'
+contingency_table_setting <- table(merged$Cohort, merged$Setting)
+
+# Step 2: Convert the contingency table to a data frame
+contingency_df_setting <- as.data.frame.matrix(contingency_table_setting)
+
+# Step 3: Add a new column with the total count of individuals in each cohort
+contingency_df_setting$Total <- rowSums(contingency_df_setting)
+
+# Step 4: Rename the 'Total' column to 'Count'
+contingency_df_setting <- contingency_df_setting %>%
   rownames_to_column(var = "Cohort") %>%
   rename(Count = Total)
 
 # Step 5: Add an index column
-contingency_df_duration <- contingency_df_duration %>%
+contingency_df_setting <- contingency_df_setting %>%
   mutate(Index = row_number())
 
 # Step 6: Reorder the columns to have the index as the first column
-contingency_df_duration <- contingency_df_duration %>%
+contingency_df_setting <- contingency_df_setting %>%
   select(Index, Cohort, Count, everything())
 
 # Step 7: Create and format the table using kable and kableExtra with enhancements
-formatted_table_duration <- contingency_df_duration %>%
-  kable("html", col.names = names(contingency_df_duration), caption = "Cohort Duration Table") %>%
+formatted_table_setting <- contingency_df_setting %>%
+  kable("html", col.names = names(contingency_df_setting), caption = "Cohort Setting Table") %>%
   kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#4CAF50") %>%
-  row_spec(1:nrow(contingency_df_duration), background = c("#f2f2f2", "white")) %>%
+  row_spec(1:nrow(contingency_df_setting), background = c("#f2f2f2", "white")) %>%
   column_spec(1, bold = TRUE, color = "blue") %>%
   column_spec(3, background = "#ffebcc") %>%
-  add_header_above(c("Cohort Information" = 3, "Durations" = ncol(contingency_df_duration) - 3)) %>%
-  footnote(general = "This table provides a breakdown of cohorts by Duration.")
+  add_header_above(c("Cohort Information" = 3, "Settings" = ncol(contingency_df_setting) - 3)) %>%
+  footnote(general = "This table provides a breakdown of cohorts by Setting.")
 
-# Display the formatted table for Duration
-formatted_table_duration
+
 
 ```
 
+```{r}
+#| echo: true
+#| warning: false
+#| output: true
+
+# Display the formatted table for Setting
+formatted_table_setting
+
+```
+
+:::
+
+### Cohort Duration Table
+
+::: blue
+> **This table shows descriptives by cohort for different durations**
+
+
+```{r}
+# #| echo: true
+# #| warning: false
+# #| output: false
+# 
+# #column_names <- names(merged)
+# #print(column_names)
+# 
+# # Assuming you find the exact column name as "Points Received: \nAmount of Service - Duration"
+# exact_column_name <- "Points Received: \r\nAmount of Service - Duration"
+# 
+# # Create a new column 'duration' that is a copy of the original column
+# merged$duration <- merged[[exact_column_name]]
+# 
+# # Ensure 'duration' column is factors
+# merged$duration <- as.factor(merged$duration)
+# 
+# # Verify the new column
+# #str(merged$duration)
+# 
+# # Step 1: Create contingency table for 'duration' by 'Cohort'
+# contingency_table_duration <- table(merged$Cohort, merged$duration)
+# 
+# # Step 2: Convert the contingency table to a data frame
+# contingency_df_duration <- as.data.frame.matrix(contingency_table_duration)
+# 
+# # Step 3: Add a new column with the total count of individuals in each cohort
+# contingency_df_duration$Total <- rowSums(contingency_df_duration)
+# 
+# # Step 4: Rename the 'Total' column to 'Count'
+# contingency_df_duration <- contingency_df_duration %>%
+#   rownames_to_column(var = "Cohort") %>%
+#   rename(Count = Total)
+# 
+# # Step 5: Add an index column
+# contingency_df_duration <- contingency_df_duration %>%
+#   mutate(Index = row_number())
+# 
+# # Step 6: Reorder the columns to have the index as the first column
+# contingency_df_duration <- contingency_df_duration %>%
+#   select(Index, Cohort, Count, everything())
+# 
+# # Step 7: Create and format the table using kable and kableExtra with enhancements
+# formatted_table_duration <- contingency_df_duration %>%
+#   kable("html", col.names = names(contingency_df_duration), caption = "Cohort Duration Table") %>%
+#   kable_styling(full_width = F, position = "center", bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+#   row_spec(0, bold = TRUE, color = "white", background = "#4CAF50") %>%
+#   row_spec(1:nrow(contingency_df_duration), background = c("#f2f2f2", "white")) %>%
+#   column_spec(1, bold = TRUE, color = "blue") %>%
+#   column_spec(3, background = "#ffebcc") %>%
+#   add_header_above(c("Cohort Information" = 3, "Durations" = ncol(contingency_df_duration) - 3)) %>%
+#   footnote(general = "This table provides a breakdown of cohorts by Duration.")
+
+```
+
+```{r}
+#| echo: true
+#| warning: false
+#| output: true
+
+# Display the formatted table for Setting
+##formatted_table_duration
+
+```
+
+:::
+
+:::
